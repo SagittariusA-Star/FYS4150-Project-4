@@ -68,46 +68,52 @@ M: arma::vec
     Vector of magnetic moments
 */
 {   std::mt19937_64 generator;
-    std::mt19937_64 acceptance;
-    std::uniform_int_distribution<int> distribution(0, N);
-    std::uniform_real_distribution<int> accepting(0, 1);
+    std::uniform_int_distribution<int> distribution(0, N - 1);
+    std::uniform_real_distribution<double> accepting(0, 1);
     int i_samp;
     int j_samp;
     double delta_E;
     double Boltz_factor; 
-    arma::imat lattice = lattice(N)
-    E(0) = E_init(lattice);
-    M(0) = M_init(lattice);
-
-    for (int i = 0; i < MC; i++){
+    arma::imat matrix = lattice(N);
+    E(0) = E_init(matrix);
+    M(0) = M_init(matrix);
+    for (int i = 0; i < MC - 1; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
             j_samp = distribution(generator);
-            delta_E = 2 * lattice(i_samp, j_samp)
-                        *(lattice(periodic_index(i_samp + 1, N), j_samp)
-                        + lattice(periodic_index(i_samp - 1, N), j_samp)
-                        + lattice(i_samp, periodic_index(j_samp + 1))
-                        + lattice(i_samp, periodic_index(j_samp - 1)));
+            delta_E = 2 * matrix(i_samp, j_samp)
+                        *(matrix(periodic_index(i_samp + 1, N), j_samp)
+                        + matrix(periodic_index(i_samp - 1, N), j_samp)
+                        + matrix(i_samp, periodic_index(j_samp + 1, N))
+                        + matrix(i_samp, periodic_index(j_samp - 1, N)));
 
-            Boltz_factor = exp(- delta_E / T);
-            if (Boltz_factor < accepting(acceptance))
-            {
-                lattice(i_samp, j_samp) *= - 1;
-                E(i + 1) = E(0) + delta_E;
-                M(i + 1) = M(0) + lattice(i_samp, j_samp);
+            Boltz_factor = exp( - delta_E / T);
+            cout << Boltz_factor << " " << accepting(generator) << endl;
+            if (Boltz_factor < accepting(generator))
+            {   
+                //cout << delta_E << endl;
+                matrix(i_samp, j_samp) *= - 1;
+                E(i + 1) = E(i) + delta_E;
+                M(i + 1) = M(i) + matrix(i_samp, j_samp);
             }
-
-    }}
+            else 
+            {
+                E(i + 1) = E(i);
+                M(i + 1) = M(i);
+            }
+        }
+    }
 }
 
 
 int main ()
 {   
-    int N = 2;
-    int MC = 10;
+    int N = 10;
+    int MC = 1e2;
     double T = 1.0;
     arma::vec E = arma::zeros<arma::vec>(MC);
     arma::vec M = arma::zeros<arma::vec>(MC);
     metropolis(MC, N, T, E, M);
+    //E.print();
     return 0;
 }

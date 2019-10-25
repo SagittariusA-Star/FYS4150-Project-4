@@ -11,10 +11,15 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    int sum = 2;
+    int *sum = new int [2];
+    int *result = new int [2];
+    sum[0] = 1; sum[1] = 1;
+    MPI_Allreduce(sum, result, 2, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    
+    for (int i = 0; i< 2; i++){
+        std::cout << rank << " " << result[i] << " " << sum[i] << std::endl;
 
-    MPI_Reduce(&rank, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    std::cout << rank << " " << sum << std::endl;
+    }
     MPI_Finalize();
 
     return 0;

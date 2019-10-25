@@ -53,6 +53,21 @@ arma::imat lattice (int N)
     return lattice;
 }
 
+double  E_mean_2(double T)
+/*
+Calculates the analytical expectation value for the energy
+for a 2x2 lattice.
+
+Parameters
+------------
+T: double
+    Temperature in units k_B * T / J
+*/
+{
+    double expval = -8 * std::sinh(8.0 / T) / (std::cosh(8.0 / T) + 3.0);
+    return expval;
+}
+
 void metropolis(int MC, int N, double T, double *E, double *M)
 /*
 ----------
@@ -107,7 +122,7 @@ M: arma::vec
     }
 }
 
-
+/*
 int main ()
 {   
     int N = 2;
@@ -126,3 +141,4 @@ int main ()
     delete[] M;
     return 0;
 }
+*/

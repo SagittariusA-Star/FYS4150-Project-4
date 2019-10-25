@@ -53,7 +53,7 @@ arma::imat lattice (int N)
     return lattice;
 }
 
-void metropolis(int MC, int N, double T, arma::vec &E, arma::vec &M)
+void metropolis(int MC, int N, double T, double &E, double &M)
 /*
 ----------
 MC: int
@@ -75,10 +75,10 @@ M: arma::vec
     double delta_E;
     double Boltz_factor; 
     arma::imat matrix = lattice(N);
-    E(0) = E_init(matrix);
-    M(0) = M_init(matrix);
-    double _E = E(0); 
-    double _M = M(0);
+    E[0] = E_init(matrix);
+    M[0] = M_init(matrix);
+    double _E = E[0]; 
+    double _M = M[0];
     for (int i = 0; i < MC; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
@@ -99,8 +99,8 @@ M: arma::vec
                 _M += 2 * matrix(i_samp, j_samp);
             }
         }
-        E(i) = _E;
-        M(i) = _M;
+        E[i] = _E;
+        M[i] = _M;
     }
 }
 
@@ -110,8 +110,8 @@ int main ()
     int N = 2;
     int MC = 1e6;
     double T = 1.0;
-    arma::vec E = arma::zeros<arma::vec>(MC);
-    arma::vec M = arma::zeros<arma::vec>(MC);
+    double *E = new double [MC];
+    double *M = new double [MC];
     metropolis(MC, N, T, E, M);
     //E.print();
     cout << arma::mean(E) << endl;

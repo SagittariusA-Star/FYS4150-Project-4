@@ -77,7 +77,9 @@ M: arma::vec
     arma::imat matrix = lattice(N);
     E(0) = E_init(matrix);
     M(0) = M_init(matrix);
-    for (int i = 0; i < MC - 1; i++){
+    double _E = E(0); 
+    double _M = M(0);
+    for (int i = 0; i < MC; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
             j_samp = distribution(generator);
@@ -88,32 +90,30 @@ M: arma::vec
                         + matrix(i_samp, periodic_index(j_samp - 1, N)));
 
             Boltz_factor = exp( - delta_E / T);
-            cout << Boltz_factor << " " << accepting(generator) << endl;
-            if (Boltz_factor < accepting(generator))
+            //cout << delta_E << " " << Boltz_factor << " " << accepting(generator) << endl;
+            if (Boltz_factor >= accepting(generator))
             {   
                 //cout << delta_E << endl;
                 matrix(i_samp, j_samp) *= - 1;
-                E(i + 1) = E(i) + delta_E;
-                M(i + 1) = M(i) + matrix(i_samp, j_samp);
-            }
-            else 
-            {
-                E(i + 1) = E(i);
-                M(i + 1) = M(i);
+                _E += delta_E;
+                _M += 2 * matrix(i_samp, j_samp);
             }
         }
+        E(i) = _E;
+        M(i) = _M;
     }
 }
 
 
 int main ()
 {   
-    int N = 10;
-    int MC = 1e2;
+    int N = 2;
+    int MC = 1e6;
     double T = 1.0;
     arma::vec E = arma::zeros<arma::vec>(MC);
     arma::vec M = arma::zeros<arma::vec>(MC);
     metropolis(MC, N, T, E, M);
     //E.print();
+    cout << arma::mean(E) << endl;
     return 0;
 }

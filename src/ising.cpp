@@ -54,7 +54,7 @@ void mean_and_variance(double *A, int N, double &mean, double &var)
     Parameters:
     -----------
     A: double *
-        Array to compute mean of.
+        Array to compute mean  and variance of.
     N: int 
         Length of array.
     mean: double
@@ -75,6 +75,20 @@ void mean_and_variance(double *A, int N, double &mean, double &var)
     var -= mean;
 }
 
+double Cv_2(double T)
+/*
+Calculate the anaylitical expression for the
+heat capacity for a 2x2 lattice
+Parameters
+------------
+T: double
+    Temperature in units k_B * T / J
+*/
+{
+    double Cv = 192 * (std::cosh(8.0 / T) + 1)
+                    / (T * T * (std::cosh(8.0 / T) + 3));
+    return Cv;      
+}
 
 double  E_mean_2(double T)
 /*
@@ -146,23 +160,3 @@ M: arma::vec
     }
 }
 
-/*
-int main ()
-{   
-    int N = 2;
-    int MC = 1e6;
-    double T = 1.0;
-    double *E = new double[MC];
-    double *M = new double[MC];
-    metropolis(MC, N, T, E, M);
-    //E.print();
-    double sum = 0;
-    for(int i = 0; i< MC; i++){
-        sum += E[i];
-    }
-    cout << sum/MC << endl;
-    delete[] E;
-    delete[] M;
-    return 0;
-}
-*/

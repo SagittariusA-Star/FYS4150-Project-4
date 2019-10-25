@@ -73,7 +73,13 @@ M: arma::vec
     int i_samp;
     int j_samp;
     double delta_E;
-    double Boltz_factor; 
+    arma::vec boltzmann_precal = arma::zeros<arma::vec>(17);
+    boltzmann_precal(0)  = exp(-8.0 / T);
+    boltzmann_precal(4)  = exp(-4.0 / T);
+    boltzmann_precal(8)  = exp( 0.0 / T);
+    boltzmann_precal(12) = exp( 4.0 / T);
+    boltzmann_precal(16) = exp( 8.0 / T);
+
     arma::imat matrix = lattice(N);
     E(0) = E_init(matrix);
     M(0) = M_init(matrix);
@@ -88,12 +94,8 @@ M: arma::vec
                         + matrix(periodic_index(i_samp - 1, N), j_samp)
                         + matrix(i_samp, periodic_index(j_samp + 1, N))
                         + matrix(i_samp, periodic_index(j_samp - 1, N)));
-
-            Boltz_factor = exp( - delta_E / T);
-            //cout << delta_E << " " << Boltz_factor << " " << accepting(generator) << endl;
-            if (Boltz_factor >= accepting(generator))
+            if (boltzmann_precal((int) delta_E + 8) >= accepting(generator))
             {   
-                //cout << delta_E << endl;
                 matrix(i_samp, j_samp) *= - 1;
                 _E += delta_E;
                 _M += 2 * matrix(i_samp, j_samp);

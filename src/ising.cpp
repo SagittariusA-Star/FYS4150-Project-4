@@ -53,6 +53,34 @@ arma::imat lattice (int N)
     return lattice;
 }
 
+void mean_and_variance(double *A, int N, double mean, double var)
+/*
+    Function comuting mean of given array.
+    
+    Parameters:
+    -----------
+    A: double *
+        Array to compute mean of.
+    N: int 
+        Length of array.
+    mean: double
+        Mean that is to be filled.
+    var: double
+        Variance to be filled.
+*/
+{   
+    double mean = 0;
+    double var = 0;
+    for (int i = 0; i < N; i++)
+    {
+        mean += A[i];
+        var += A[i] * A[i];
+    }
+    mean /= N;
+    var /= N;
+}
+
+
 void metropolis(int MC, int N, double T, double *E, double *M)
 /*
 ----------

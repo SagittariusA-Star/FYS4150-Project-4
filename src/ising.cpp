@@ -1,11 +1,5 @@
-# include <iostream>
-# include <fstream>
-//# include <mpi.h> 
-# include <armadillo>
-# include <ctime>
-# include <random>
-# include <cmath> 
-
+# include "ising.h"
+# include <stdexcept>
 using std::cout;
 using std::exp;
 using std::endl;
@@ -53,7 +47,7 @@ arma::imat lattice (int N)
     return lattice;
 }
 
-void mean_and_variance(double *A, int N, double mean, double var)
+void mean_and_variance(double *A, int N, double &mean, double &var)
 /*
     Function comuting mean of given array.
     
@@ -69,15 +63,16 @@ void mean_and_variance(double *A, int N, double mean, double var)
         Variance to be filled.
 */
 {   
-    double mean = 0;
-    double var = 0;
+    mean = 0;
+    var = 0;
     for (int i = 0; i < N; i++)
     {
         mean += A[i];
         var += A[i] * A[i];
     }
-    mean /= N;
-    var /= N;
+    mean /= (double) N;
+    var /= (double) N;
+    var -= mean;
 }
 
 
@@ -96,7 +91,7 @@ T: double
     return expval;
 }
 
-void metropolis(int MC, int N, double T, double *E, double *M)
+void metropolis(int MC, int N, double T, double *E, double *M, int rank)
 /*
 ----------
 MC: int
@@ -114,6 +109,7 @@ M: arma::vec
     std::mt19937_64 generator;
     std::uniform_int_distribution<int> distribution(0, N - 1);
     std::uniform_real_distribution<double> accepting(0, 1);
+    generator.seed(MPI_Wtime() + rank);
     int i_samp;
     int j_samp;
     double delta_E;

@@ -53,7 +53,7 @@ arma::imat lattice (int N)
     return lattice;
 }
 
-void metropolis(int MC, int N, double T, arma::vec &E, arma::vec &M)
+void metropolis(int MC, int N, double T, double *E, double *M)
 /*
 ----------
 MC: int
@@ -67,24 +67,25 @@ E: arma::vec
 M: arma::vec
     Vector of magnetic moments
 */
-{   std::mt19937_64 generator;
+{   
+    std::mt19937_64 generator;
     std::uniform_int_distribution<int> distribution(0, N - 1);
     std::uniform_real_distribution<double> accepting(0, 1);
     int i_samp;
     int j_samp;
     double delta_E;
     arma::vec boltzmann_precal = arma::zeros<arma::vec>(17);
-    boltzmann_precal(0)  = exp(-8.0 / T);
-    boltzmann_precal(4)  = exp(-4.0 / T);
-    boltzmann_precal(8)  = exp( 0.0 / T);
-    boltzmann_precal(12) = exp( 4.0 / T);
-    boltzmann_precal(16) = exp( 8.0 / T);
+    boltzmann_precal(0)  = exp(8.0 / T);
+    boltzmann_precal(4)  = exp(4.0 / T);
+    boltzmann_precal(8)  = 1.0;
+    boltzmann_precal(12) = exp(-4.0 / T);
+    boltzmann_precal(16) = exp(-8.0 / T);
 
     arma::imat matrix = lattice(N);
-    E(0) = E_init(matrix);
-    M(0) = M_init(matrix);
-    double _E = E(0); 
-    double _M = M(0);
+    E[0] = E_init(matrix);
+    M[0] = M_init(matrix);
+    double _E = E[0]; 
+    double _M = M[0];
     for (int i = 0; i < MC; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
@@ -101,8 +102,8 @@ M: arma::vec
                 _M += 2 * matrix(i_samp, j_samp);
             }
         }
-        E(i) = _E;
-        M(i) = _M;
+        E[i] = _E;
+        M[i] = _M;
     }
 }
 
@@ -112,10 +113,16 @@ int main ()
     int N = 2;
     int MC = 1e6;
     double T = 1.0;
-    arma::vec E = arma::zeros<arma::vec>(MC);
-    arma::vec M = arma::zeros<arma::vec>(MC);
+    double *E = new double[MC];
+    double *M = new double[MC];
     metropolis(MC, N, T, E, M);
     //E.print();
-    cout << arma::mean(E) << endl;
+    double sum = 0;
+    for(int i = 0; i< MC; i++){
+        sum += E[i];
+    }
+    cout << sum/MC << endl;
+    delete[] E;
+    delete[] M;
     return 0;
 }

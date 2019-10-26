@@ -3,7 +3,7 @@ UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux) # Linux
 $(info "Compiling for Linux")
-CPPflags= g++ -std=c++11 -Wall
+CPPflags= mpic++ -std=c++11 -Wall
 endif
 ifeq ($(UNAME), Darwin) # Mac
 $(info "Compiling for Mac for openMP support")

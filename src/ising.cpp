@@ -86,7 +86,7 @@ T: double
 */
 {
     double Cv = 192 * (std::cosh(8.0 / T) + 1)
-                    / (T * T * (std::cosh(8.0 / T) + 3));
+                    / (T * T * std::pow(std::cosh(8.0 / T) + 3, 2));
     return Cv;      
 }
 
@@ -105,19 +105,29 @@ T: double
     return expval;
 }
 
-void metropolis(int MC, int N, double T, double *E, double *M, int rank)
+void metropolis(int MC, int N, int start_samp, arma::imat &matrix,
+                double T, double *E, double *M, double *results, int rank)
 /*
 ----------
 MC: int
-    Number of Monte Carlo samples
+    Number of Monte Carlo cycles.
 N: int 
-    Dimension of lattice
+    Dimension of lattice.
+start_samp: int
+    Number of Monte Carlo cycles after which to sample.
+matrix: arma::imat
+    Lattice of spins.
 T: double
-    Temperature in units k_B * T / J
-E: arma::vec
-    Vector of energies
-M: arma::vec
-    Vector of magnetic moments
+    Temperature in units k_B * T / J.
+E: double
+    Vector of length MC with energies.
+M: double
+    Vector of lengths MC with magnetic moments.
+results: double
+    Vector of length 6 to fill with E/MC, E*E/MC, M/MC, M*M/MC,
+    fabs(M)/MC and accepted flip numbers.
+rank: int
+    Rank of processor.
 */
 {   
     std::mt19937_64 generator;
@@ -134,11 +144,18 @@ M: arma::vec
     boltzmann_precal(12) = exp(-4.0 / T);
     boltzmann_precal(16) = exp(-8.0 / T);
 
-    arma::imat matrix = lattice(N);
     E[0] = E_init(matrix);
     M[0] = M_init(matrix);
     double _E = E[0]; 
     double _M = M[0];
+    double accepted_flip = 0.0;
+    results[0] = 0.0;
+    results[1] = 0.0;
+    results[2] = 0.0;
+    results[3] = 0.0;
+    results[4] = 0.0;
+    results[5] = 0.0;
+
     for (int i = 0; i < MC; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
@@ -153,10 +170,28 @@ M: arma::vec
                 matrix(i_samp, j_samp) *= - 1;
                 _E += delta_E;
                 _M += 2 * matrix(i_samp, j_samp);
+                accepted_flip += 1;
+                
             }
         }
+        if (i >= start_samp)
+            {
+                results[0] += _E;
+                results[1] += _E * _E;
+                results[2] += _M;
+                results[3] += _M * _M;
+                results[4] += std::fabs(_M);
+                results[5] += accepted_flip;
+            }
         E[i] = _E;
-        M[i] = _M;
+        M[i] = _M;        
     }
+    results[0] /= (double) MC;
+    results[1] /= (double) MC;
+    results[1] -= results[0] * results[0];
+    results[2] /= (double) MC;
+    results[3] /= (double) MC;
+    results[3] -= results[2] * results[2];
+    results[4] /= (double) MC;
 }
 

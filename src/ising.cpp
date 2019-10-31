@@ -114,6 +114,7 @@ array: bool
     int i_samp;
     int j_samp;
     double delta_E;
+    double N_samp = MC - start_samp;
     arma::vec boltzmann_precal = arma::zeros<arma::vec>(17);
     boltzmann_precal(0)  = exp(8.0 / T);
     boltzmann_precal(4)  = exp(4.0 / T);
@@ -169,12 +170,12 @@ array: bool
             accp_flip[i] = accepted_flip;
         }       
     }
-    results[0] /= (double) MC;
-    results[1] /= (double) MC;
+    results[0] /= N_samp;
+    results[1] /= N_samp;
     results[1] -= results[0] * results[0];
-    results[2] /= (double) MC;
-    results[3] /= (double) MC;
+    results[2] /= N_samp;
+    results[3] /= N_samp;
+    results[4] /= N_samp;
     results[3] -= results[4] * results[4];
-    results[4] /= (double) MC;
 }
 

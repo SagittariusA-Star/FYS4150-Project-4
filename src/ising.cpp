@@ -47,35 +47,6 @@ arma::imat lattice (int N)
     return lattice;
 }
 
-void mean_and_variance(double *A, int MC, double &mean, double &var)
-/*
-    Function comuting mean of given array.
-    
-    Parameters:
-    -----------
-    A: double *
-        Array to compute mean  and variance of.
-    MC: int 
-        Sample size for Monte Carlo algorithm A is calculated from.
-    mean: double
-        Mean that is to be filled.
-    var: double
-        Variance to be filled.
-*/
-{   
-    mean = 0;
-    var = 0;
-    for (int i = 0; i < MC; i++)
-    {
-        mean += A[i];
-        var += A[i] * A[i];
-    }
-    mean /= (double) MC;
-    var /= (double) MC;
-    var -= mean * mean;
-    
-}
-
 double Cv_2(double T)
 /*
 Calculate the anaylitical expression for the
@@ -86,9 +57,8 @@ T: double
     Temperature in units k_B * T / J
 */
 {
-    double Cv = 64 * (3 * std::cosh(8.0 / T) + 1)
-                   / (T * T * std::pow((std::cosh(8.0 / T) + 3), 2));
-    cout << Cv << endl;
+    double Cv = 192 * (std::cosh(8.0 / T) + 1)
+                    / (T * T * std::pow(std::cosh(8.0 / T) + 3, 2));
     return Cv;      
 }
 
@@ -107,19 +77,34 @@ T: double
     return expval;
 }
 
-void metropolis(int MC, int N, double T, double *E, double *M, int rank)
+void metropolis(int MC, int N, int start_samp, arma::imat &matrix,
+                double T, double *E, double *M, double *accp_flip, 
+                double *results, int rank, bool array = false)
 /*
 ----------
 MC: int
-    Number of Monte Carlo samples
+    Number of Monte Carlo cycles.
 N: int 
-    Dimension of lattice
+    Dimension of lattice.
+start_samp: int
+    Number of Monte Carlo cycles after which to sample.
+matrix: arma::imat
+    Lattice of spins.
 T: double
-    Temperature in units k_B * T / J
-E: arma::vec
-    Vector of energies
-M: arma::vec
-    Vector of magnetic moments
+    Temperature in units k_B * T / J.
+E: double
+    Vector of length MC with energies.
+M: double
+    Vector of lengths MC with magnetic moments.
+accp_flips: int
+    Vector of length MC with # accepted flips.
+results: double
+    Vector of length 6 to fill with E/MC, E*E/MC, M/MC, M*M/MC,
+    fabs(M)/MC and accepted flip numbers.
+rank: int
+    Rank of processor.
+array: bool
+    Fill arrays is true
 */
 {   
     std::mt19937_64 generator;
@@ -135,18 +120,27 @@ M: arma::vec
     boltzmann_precal(8)  = 1.0;
     boltzmann_precal(12) = exp(-4.0 / T);
     boltzmann_precal(16) = exp(-8.0 / T);
+    double _E = E_init(matrix); 
+    double _M = M_init(matrix);
+    if (array == true)
+    {
+        E[0] = _E;
+        M[0] = _M;
+    }
+    double accepted_flip = 0;
+    accp_flip[0] = 0;
+    results[0] = 0.0;
+    results[1] = 0.0;
+    results[2] = 0.0;
+    results[3] = 0.0;
+    results[4] = 0.0;
 
-    arma::imat matrix = lattice(N);
-    E[0] = E_init(matrix);
-    M[0] = M_init(matrix);
-    double _E = E[0]; 
-    double _M = M[0];
     for (int i = 0; i < MC; i++){
         for (int j = 0; j < N * N; j++){  
             i_samp = distribution(generator);
             j_samp = distribution(generator);
             delta_E = 2 * matrix(i_samp, j_samp)
-                        *(matrix(periodic_index(i_samp + 1, N), j_samp)
+                        * (matrix(periodic_index(i_samp + 1, N), j_samp)
                         + matrix(periodic_index(i_samp - 1, N), j_samp)
                         + matrix(i_samp, periodic_index(j_samp + 1, N))
                         + matrix(i_samp, periodic_index(j_samp - 1, N)));
@@ -155,10 +149,32 @@ M: arma::vec
                 matrix(i_samp, j_samp) *= - 1;
                 _E += delta_E;
                 _M += 2 * matrix(i_samp, j_samp);
+                accepted_flip += 1;
+                
             }
         }
-        E[i] = _E;
-        M[i] = _M;
+        if (i >= start_samp)
+            {
+                results[0] += _E;
+                results[1] += _E * _E;
+                results[2] += _M;
+                results[3] += _M * _M;
+                results[4] += std::fabs(_M);
+            }
+
+        if (array == true)
+        {
+            E[i] = _E;
+            M[i] = _M; 
+            accp_flip[i] = accepted_flip;
+        }       
     }
+    results[0] /= (double) MC;
+    results[1] /= (double) MC;
+    results[1] -= results[0] * results[0];
+    results[2] /= (double) MC;
+    results[3] /= (double) MC;
+    results[3] -= results[4] * results[4];
+    results[4] /= (double) MC;
 }
 

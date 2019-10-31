@@ -47,7 +47,7 @@ arma::imat lattice (int N)
     return lattice;
 }
 
-void mean_and_variance(double *A, int N, double &mean, double &var)
+void mean_and_variance(double *A, int MC, double &mean, double &var)
 /*
     Function comuting mean of given array.
     
@@ -55,8 +55,8 @@ void mean_and_variance(double *A, int N, double &mean, double &var)
     -----------
     A: double *
         Array to compute mean  and variance of.
-    N: int 
-        Length of array.
+    MC: int 
+        Sample size for Monte Carlo algorithm A is calculated from.
     mean: double
         Mean that is to be filled.
     var: double
@@ -65,14 +65,15 @@ void mean_and_variance(double *A, int N, double &mean, double &var)
 {   
     mean = 0;
     var = 0;
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < MC; i++)
     {
         mean += A[i];
         var += A[i] * A[i];
     }
-    mean /= (double) N;
-    var /= (double) N;
-    var -= mean;
+    mean /= (double) MC;
+    var /= (double) MC;
+    var -= mean * mean;
+    
 }
 
 double Cv_2(double T)
@@ -85,8 +86,9 @@ T: double
     Temperature in units k_B * T / J
 */
 {
-    double Cv = 192 * (std::cosh(8.0 / T) + 1)
-                    / (T * T * (std::cosh(8.0 / T) + 3));
+    double Cv = 64 * (3 * std::cosh(8.0 / T) + 1)
+                   / (T * T * std::pow((std::cosh(8.0 / T) + 3), 2));
+    cout << Cv << endl;
     return Cv;      
 }
 

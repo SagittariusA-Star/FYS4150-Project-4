@@ -28,3 +28,6 @@ tests-main.o :			tests-main.cpp
 
 test-functions.o :			test-functions.cpp
 		        	${CPPflags} -c test-functions.cpp ${LIB}
+
+clean:
+		rm *.o

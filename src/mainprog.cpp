@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
 
     MC = 1e6;
     N = 40;
-    T_len = 20;
+    T_len = 50;
     T_min = 2.0;
     T_max = 2.5;
     dT = (T_max - T_min)/((double) T_len);
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
 
     MC = 1e6;
     N = 60;
-    T_len = 20;
+    T_len = 50;
     T_min = 2.0;
     T_max = 2.5;
     dT = (T_max - T_min)/((double) T_len);
@@ -462,7 +462,7 @@ int main(int argc, char *argv[])
 
     MC = 1e6;
     N = 80;
-    T_len = 20;
+    T_len = 50;
     T_min = 2.0;
     T_max = 2.5;
     dT = (T_max - T_min)/((double) T_len);
@@ -551,7 +551,7 @@ int main(int argc, char *argv[])
 
     MC = 1e6;
     N = 100;
-    T_len = 20;
+    T_len = 50;
     T_min = 2.0;
     T_max = 2.5;
     dT = (T_max - T_min)/((double) T_len);

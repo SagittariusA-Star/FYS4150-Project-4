@@ -6,7 +6,7 @@ $(info "Compiling for Linux")
 CPPflags= g++ -std=c++11 -Wall
 endif
 ifeq ($(UNAME), Darwin) # Mac
-$(info "Compiling for Mac for openMP support")
+$(info "Compiling for Mac for MPI support")
 CPPflags= mpic++ -std=c++11 -Wall
 endif
 

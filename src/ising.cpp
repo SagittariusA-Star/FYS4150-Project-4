@@ -1,8 +1,14 @@
-# include "ising.h"
+# include <iostream>
+# include <armadillo>
+# include <ctime>
+# include <random>
+# include <cmath> 
+# include <mpi.h>
 # include <stdexcept>
 using std::cout;
 using std::exp;
 using std::endl;
+
 
 
 inline int periodic_index(int i, int N)
@@ -62,7 +68,7 @@ T: double
     return Cv;      
 }
 
-double  E_mean_2(double T)
+double E_mean_2(double T)
 /*
 Calculates the analytical expectation value for the energy
 for a 2x2 lattice.
@@ -75,6 +81,39 @@ T: double
 {
     double expval = -8 * std::sinh(8.0 / T) / (std::cosh(8.0 / T) + 3.0);
     return expval;
+}
+
+double M_mean_2(double T)
+/*
+Calculates the analytical expectation value for the 
+magnetization for a 2x2 lattice.
+
+Parameters
+------------
+T: double
+    Temperature in units k_B * T / J
+*/
+{
+    double expval = (2 * exp(8.0 / T) + 4.0) / (std::cosh(8.0 / T) + 3.0);
+    return expval;
+}
+
+double susc_2(double T)
+/*
+Calculates the analytical expectation value for the 
+magnetization for a 2x2 lattice.
+
+Parameters
+------------
+T: double
+    Temperature in units k_B * T / J
+*/
+{
+    double expval = ((8*exp(8.0 / T) + 8) * (std::cosh(8.0 / T) + 3) 
+                     - (2*exp(8.0 / T)+ 4) * (2*exp(8.0 / T)+ 4));
+    expval = expval / (T * (std::cosh(8.0 / T) + 3) * (std::cosh(8.0 / T) + 3));
+    return expval;
+    
 }
 
 void metropolis(int MC, int N, int start_samp, arma::imat &matrix,

@@ -6,9 +6,9 @@ import numba as nb
 def fast_cumsum(arr, MC, norm_points):
     return np.cumsum(arr) / (MC * norm_points)
 
-@nb.jit
+
 def read_file_fast(filename, skip=2):
-    return np.load(filename, skiprows=skip)
+    return np.loadtxt(filename, skiprows=skip)
 
 T1_Dis_data = read_file_fast("P_T1_MC1e7_Disordered.txt")# np.loadtxt("P_T1_MC1e7_Disordered.txt", skiprows=2)
 T1_Ord_data = read_file_fast("P_T1_MC1e7_Ordered.txt")
@@ -34,7 +34,7 @@ E1_Dis_mean = fast_cumsum(E1_Dis, MC, 400)
 E1_Ord_mean = fast_cumsum(E1_Ord, MC, 400)
 E24_Dis_mean = fast_cumsum(E24_Dis, MC, 400)
 E24_Ord_mean = fast_cumsum(E24_Ord, MC, 400)
-exit()
+
 
 plt.plot(MC[: int(1e4)], E24_Dis_mean[: int(1e4)], label=r"$T = 2.4, Disordered$")
 plt.legend(loc=0)

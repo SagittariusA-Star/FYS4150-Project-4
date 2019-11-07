@@ -81,9 +81,10 @@ ax[1, 1].set_ylabel(r"$\frac{\chi(T)}{N^2}$")
 ax[1, 1].set_xlabel(r"$T$")
 ax[1, 1].grid()
 
+fig.set_size_inches(7.1014, 9.0971 / 2)
 fig.tight_layout(w_pad=1)
 fig.savefig("../doc/Figures/thermo_quants.pdf", dpi=1000)
-plt.show()
+#plt.show()
 
 # Computing critical temperature
 L100 = 100

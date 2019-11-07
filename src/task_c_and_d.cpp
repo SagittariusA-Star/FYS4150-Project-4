@@ -15,12 +15,6 @@ int main(int argc, char *argv[])
     int N = 20;
     int MC = 10; //1e6;
     double T = 1.0;
-    double E_mean;
-    double E_var;
-    int T_len;
-    double T_min;
-    double T_max;
-    double dT;
     int rank = 0;
 
     arma::imat matrix = lattice(N);

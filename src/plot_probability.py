@@ -6,11 +6,14 @@ import numba as nb
 def fast_cumsum(arr, MC, norm_points):
     return np.cumsum(arr) / (MC * norm_points)
 
+@nb.jit
+def read_file_fast(filename, skip=2):
+    return np.load(filename, skiprows=skip)
 
-T1_Dis_data = np.loadtxt("P_T1_MC1e7_Disordered.txt", skiprows=2)
-T1_Ord_data = np.loadtxt("P_T1_MC1e7_Ordered.txt", skiprows=2)
-T24_Dis_data = np.loadtxt("P_T24_MC1e7_Disordered.txt", skiprows=2)
-T24_Ord_data = np.loadtxt("P_T24_MC1e7_Ordered.txt", skiprows=2)
+T1_Dis_data = read_file_fast("P_T1_MC1e7_Disordered.txt")# np.loadtxt("P_T1_MC1e7_Disordered.txt", skiprows=2)
+T1_Ord_data = read_file_fast("P_T1_MC1e7_Ordered.txt")
+T24_Dis_data = read_file_fast("P_T24_MC1e7_Disordered.txt")
+T24_Ord_data = read_file_fast("P_T24_MC1e7_Ordered.txt")
 E1_Dis = T1_Dis_data[:, 0]
 E1_Ord = T1_Ord_data[:, 0]
 E24_Dis = T24_Dis_data[:, 0]
@@ -27,7 +30,7 @@ flip24_Dis = T24_Dis_data[ :, 2]
 flip24_Ord = T24_Ord_data[ :, 2]
 """
 MC = np.arange(1, len(E1_Dis) + 1, 1)
-E1_Dis_mean = fast_cumsum(E1_disc, MC, 400)
+E1_Dis_mean = fast_cumsum(E1_Dis, MC, 400)
 E1_Ord_mean = fast_cumsum(E1_Ord, MC, 400)
 E24_Dis_mean = fast_cumsum(E24_Dis, MC, 400)
 E24_Ord_mean = fast_cumsum(E24_Ord, MC, 400)

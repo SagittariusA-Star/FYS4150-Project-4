@@ -59,11 +59,13 @@ example of such a lattice is
 The energy of the lattice is defined by 
 \begin{align}
 	E = -J\sum_l\sum_{\langle kl\rangle} s_k s_l,
+	\label{eq:energy}
 \end{align}
 where $\langle kl\rangle$ denotes the sum over the nearest neighboors and the
 spins take the values $s_i = \pm 1$ and $J$ has units energy. The magnetization is defined similarly as 
 \begin{align}
 	M = \sum_i s_i,	
+	\label{eq:magnetization}
 \end{align} 
 simply being the sum of the systems spins. The probability of the system having
 a cetain energy state is given by the Boltzmann distribution 
@@ -82,7 +84,7 @@ over all possible microstates of the system. The mean energy and absolute magnet
 of the system is then given as 
 \begin{align}
 	\langle E \rangle &= \sum_i E_i P(E_i) = \sum_i \frac{E_i}{Z}e^{-\beta E_i} = \pdv{\ln Z}{\beta}\\
-	\langle |M| \rangle &= \sum_i |M_i| P(E_i) = \sum_i \frac{|M_i|}{Z}e^{-\beta E_i}
+	\langle |M| \rangle &= \sum_i |M_i| P(E_i) = \sum_i \frac{|M_i|}{Z}e^{-\beta E_i} 
 \end{align}
 and represent the most likely state of equilibrium of the system.
 Another important quantity from
@@ -150,8 +152,89 @@ Next this leads to the heat capacity being
 \begin{align}
 	C_V &= \dv{\langle E \rangle}{T} = -\frac{1}{k_BT^2}\dv{\langle E\rangle}{\beta} \\
 	&= -\frac{1}{k_BT^2}\dv{\beta}\left(-\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}\right) \\
-	&= \frac{192(\cosh(8J\beta) + 1)}{(\cosh(8J\beta) + 3)^2}
+	&= \frac{192(\cosh(8J\beta) + 1)}{(\cosh(8J\beta) + 3)^2},
 \end{align}
+and the susceptibility (when using the absolute magnetization) is 
+\begin{align}
+	\chi_{|M|} &= \frac{1}{k_BT}\left(\langle M^2 \rangle - \langle |M|\rangle^2 \right) \\
+	&= \frac{1}{k_BT}\left(\sum_i \frac{M_i^2}{Z}e^{-E_i\beta} - \langle |M|\rangle^2\right) \\
+	&= \frac{1}{k_BT}\left(\frac{8e^{8J\beta} + 8}{\cosh(8J\beta) + 3} -\frac{(2e^{8J\beta} + 4)}{(\cosh(8J\beta) + 3)^2} \right).
+\end{align}
+
+These analytical quantities can now be compares to the numerical results.
+
+\subsection{The Markov Chain Monte Carlo Algorithm}
+Now that we have looked at how the lattice of interactign spins is set up, we
+can begin discribing the algorithm used to simulate the evolution of the lattice
+in time. The algorithm used to simulate the time evolution of the lattice is a
+Markov Chain Monte Carlo algorithm. We will, however, only outline the algorithm
+used here, which is derived in detail in Ch. 13 by \cite{jensen:2015}. 
+
+The first step in the algorithm is to compute the energy and magnetisation of a
+lattice of size $N\times N$, which can be ordered or disordered, depending on the
+wanted simulation.
+When computing the energies using (\ref{eq:energy}) we use periodic boundaries
+for the sum over nearest neighboors, in order to simulate an infinite grid.
+Because it is the interaction between two neighbooring spins that count towards
+the energy, we only want to count each pair of spins one time. Thus in practice
+we can count the contribution to each spin only to the right and downwards, as
+this requires half the amount of floting point operations (FLOPs) as when
+counting all nearest neighboors and deviding it by two. The periodic boundary
+then for instance makes the spin $s_{i,N}$ at a vertical lattice boundary get a
+contribution from the spin $s_{i,0}$, and similarly for the horizontal
+boundaries. The nearest neighboors at the boundaries are thus wrapes around the
+lattice. The magnetization is simply found by summing up all spins as discribed
+by (\ref{eq:magnetization}).
+
+We simulate the time evolution by looping through a number of $M$ Monte Carlo
+cycles. Then at each Monte Carlo cycle we sweep through the lattice $N\times N$
+times and at each sweep we pick a random grid point $i, j$. We sweep over random
+grid points $N\times N$ times to roughly ensure that the whole grid is covered.
+Each sweep is in practice done by
+simply drawing a random index from a uniform distribution $i,j\in[0, N-1]$,
+using a Mersenne-Twister pseudo-random number generator. At the random grid
+point we compute what energy the lattice would have if we were to flip the spin
+around. Since each spin only has four different nearest neighboors contributiong
+to
+the energy we find that the change in energy for any suggested flip is among
+five possible values $\Delta E \in {-8J, -4J, 0, 4J, 8J}$. Both the change in
+energy $\Delta E$ and the change in magnetization $\Delta M$ from a spin flip have analytical
+expression;
+\begin{align}
+	\Delta E &= E_2 - E_1 = -J\sum_{\langle kl\rangle}s_k^2s_l^2 + J\sum_{\langle kl\rangle}s_k^1s_l^1 \\
+	&= -J\sum_{\langle kl\rangle}s_k^2(s_l^2-s_l^1) = 2s_l\sum_{\langle k\rangle} s_k,
+\end{align}
+since the surrounding spins $s_k = s_k^1 = s_k^2$ are unchanged and the fliped
+spin $s_l^2 = -s_l^1$. The magnetization change is 
+\begin{align}
+	\Delta M = 2s_l^2,
+\end{align}
+since the difference in magnetization at a spin flip is 2. 
+
+The energy difference plays a key role when determaining if the suggested spin
+flip should be accepted. The acceptance rule will be modeled by a Metropolis
+algorithm and will be discribes in the next subsection. 
+
+In case the spin is fliped we update the mean values $\langle E \rangle$ and
+$\langle |M| \rangle$ and the variances $\sigma_E^2$ and $\sigma_{|M|}^2$, then
+jumping to the next Monte Carlo cycle. If the flip is not accepted no changes to
+the means and variances is made.
+
+This is done for each Monte Carlo cycle. When letting the number of Monte Calro
+cycles increas the system will than gradually converge towards the most likely
+state $\langle E \rangle$, eventually oscillating around it. The computed sample
+means and variances will than gradually approach the true means and variances.
+
+One could alternatively to flipping each spin individually generate a new random
+lattice and compute the total energy difference for each Monte Carlo to deterain whether
+the new configuration should be accepted. However, this is extremely
+inefficient, as it reequires many more FLOPs per Monte Carlo cycle than if each
+spin is fliped individually.
+
+\subsection{The Acceptance Rule - The Metropolis algorithm}
+When modeling the acceptance rule we use the Metropolis algorithm. We will here
+only outline the implementation of the Metropolis algorithm used following the
+derivation done in Ch. 13 \cite{jensen:2015}.
 
 \section{Results} \label{sec:results}
 

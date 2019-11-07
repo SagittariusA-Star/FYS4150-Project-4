@@ -94,5 +94,5 @@ TC80 = T[np.argmax(C_v80)]
 a = (TC100 - TC80) / (L100 ** (-1 / nu) - L80 ** (-1 / nu))
 TC = TC100 - a * L100 ** (-1 / nu)
 TC_analytical = 2.269
-epsilon = abs(TC - TC_analytical) / TC_analytical
-print("Critical Temperature: ", TC, " Relative error: ", epsilon)
+epsilon = abs(TC - TC_analytical) / TC_analytical * 100
+print("Critical Temperature: ", TC, " Relative error: ", epsilon, " %")

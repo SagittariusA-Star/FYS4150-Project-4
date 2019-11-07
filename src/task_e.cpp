@@ -14,9 +14,6 @@ int main(int argc, char *argv[])
 {
     int N = 60;
     int MC = 1e6;
-    double T;
-    double E_mean;
-    double E_var;
     int T_len = 50;
     double T_min = 2.0;
     double T_max = 2.5;

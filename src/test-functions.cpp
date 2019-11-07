@@ -1,6 +1,5 @@
 # include "catch.hpp"
 # include "ising.hpp"
-# include <armadillo>
 
 TEST_CASE("Compares the expectation value for the energy, heat capacity, mean magnetization and for the 2x2 lattice case with analytical solutions")
 {   
@@ -16,8 +15,6 @@ TEST_CASE("Compares the expectation value for the energy, heat capacity, mean ma
     int rank = 0; 
     arma::imat matrix = lattice(N);
     metropolis(MC, N, start_samp, matrix, T, E, M, accp_flip, results, rank);
-    cout << results[3] << " " << susc_2(T) << endl;
-    //cout << results[0] << " " << E_mean_2(T) << endl;
     REQUIRE(std::fabs(results[0] - E_mean_2(T)) == Approx(0).epsilon(tolerance));
     REQUIRE(std::fabs((results[1] / (T * T)) - Cv_2(T)) == Approx(0).epsilon(tolerance));
     REQUIRE(std::fabs(results[3] / (T) - susc_2(T)) == Approx(0).epsilon(tolerance));

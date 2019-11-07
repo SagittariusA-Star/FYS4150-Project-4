@@ -6,14 +6,14 @@ import numba as nb
 def fast_cumsum(arr, MC, norm_points):
     return np.cumsum(arr) / (MC * norm_points)
 
+@nb.njit
+def read_file_fast(filename):
+    return np.load(filename)
 
-def read_file_fast(filename, skip=2):
-    return np.loadtxt(filename, skiprows=skip)
-
-T1_Dis_data = read_file_fast("P_T1_MC1e7_Disordered.txt")# np.loadtxt("P_T1_MC1e7_Disordered.txt", skiprows=2)
-T1_Ord_data = read_file_fast("P_T1_MC1e7_Ordered.txt")
-T24_Dis_data = read_file_fast("P_T24_MC1e7_Disordered.txt")
-T24_Ord_data = read_file_fast("P_T24_MC1e7_Ordered.txt")
+T1_Dis_data = read_file_fast("P_T1_MC1e7_Disordered.npy")# np.loadtxt("P_T1_MC1e7_Disordered.txt", skiprows=2)
+T1_Ord_data = read_file_fast("P_T1_MC1e7_Ordered.npy")
+T24_Dis_data = read_file_fast("P_T24_MC1e7_Disordered.npy")
+T24_Ord_data = read_file_fast("P_T24_MC1e7_Ordered.npy")
 E1_Dis = T1_Dis_data[:, 0]
 E1_Ord = T1_Ord_data[:, 0]
 E24_Dis = T24_Dis_data[:, 0]

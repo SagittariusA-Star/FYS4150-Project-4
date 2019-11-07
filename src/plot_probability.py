@@ -6,7 +6,6 @@ import numba as nb
 def fast_cumsum(arr, MC, norm_points):
     return np.cumsum(arr) / (MC * norm_points)
 
-@nb.njit
 def read_file_fast(filename):
     return np.load(filename)
 

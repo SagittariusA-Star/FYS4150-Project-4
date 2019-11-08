@@ -1,4 +1,4 @@
- include <fstream>
+# include <fstream>
 # include <iostream>
 # include "ising.cpp"
 # include <stdexcept>
@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     double dT = (T_max - T_min)/((double) T_len);;
     int numbProc;
     int rank;
+    double t_start;
     double *T_array = new double[T_len];
     for (int i = 0; i < T_len; i++)
     {
@@ -30,7 +31,6 @@ int main(int argc, char *argv[])
     std::pair<double, double> results_MC_par;
   
     
-    double t_start = MPI_Wtime();
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numbProc);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -38,7 +38,9 @@ int main(int argc, char *argv[])
     if (rank == 0)
     {
         cout << "Starting computation for L = " << N << endl;
+        t_start = MPI_Wtime();
     }
+    MPI_Barrier(MPI_COMM_WORLD);
 
     double *C_result = new double[T_len];
     double *Chi_result = new double[T_len];
@@ -81,9 +83,27 @@ int main(int argc, char *argv[])
     MPI_Allreduce(Chi_array, Chi_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(E_mean_array, E_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(M_mean_array, M_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    if (rank==0){
+        double t_end = MPI_Wtime();
+        double CPU_time = t_end - t_start;
+        cout << "The CPU time with " << numbProc << " threads for N = " << N << " is: " << CPU_time << " seconds" << endl;
+    }
 
     MPI_Finalize();
-    double t_end = MPI_Wtime();
-    double CPU_time = 1000.0 * (t_end - t_start);
-    cout << "The CPU time with " << numbProc << " threads for N = " << N << " is: " << CPU_time << "ms" endl;
+
+    delete[] E;
+    delete[] M;
+    delete[] accp_flips;
+    delete[] results;
+    delete[] C_array;
+    delete[] Chi_array;
+    delete[] E_mean_array;
+    delete[] M_mean_array;
+    delete[] C_result;
+    delete[] Chi_result;
+    delete[] E_result;
+    delete[] M_result;
+    delete[] T_array;
 }

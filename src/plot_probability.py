@@ -4,6 +4,7 @@ import numba as nb
 
 @nb.njit
 def fast_cumsum(arr, MC, norm_points):
+    #print(arr.shape, MC.shape)
     return np.cumsum(arr) / (MC * norm_points)
 
 def read_file_fast(filename):
@@ -42,25 +43,24 @@ M24_Ord_mean = fast_cumsum(M24_Ord, MC, 400)
 #Plotting Energy
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC[: int(1e4)], E24_Dis_mean[: int(1e4)], label=r"$T = 2.4, Disordered$")
-ax[0, 0].legend(loc=0)
+ax[0, 0].plot(MC[: int(1e4)], E24_Dis_mean[: int(1e4)])
+ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel(r"$Energy [J]$")
 
-
-
-ax[1, 0].plot(MC[: int(1e4)], E24_Ord_mean[: int(1e4)], label=r"$T = 2.4, Ordered$")
-ax[1, 0].legend(loc=0)
+ax[1, 0].plot(MC[: int(1e4)], E24_Ord_mean[: int(1e4)])
+ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel(r"$Energy [J]$")
 
-ax[0, 1].plot(MC[: int(1e4)], E1_Dis_mean[: int(1e4)], label=r"$T = 1, Disordered$")
-ax[0, 1].legend(loc=0)
+ax[0, 1].plot(MC[: int(1e4)], E1_Dis_mean[: int(1e4)])
+ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel(r"$Energy [J]$")
 
-ax[1, 1].plot(MC[: int(1e4)], E1_Ord_mean[: int(1e4)], label=r"$T = 1, Ordered$")
-ax[1, 1].legend(loc=0)
+ax[1, 1].plot(MC[: int(1e4)], E1_Ord_mean[: int(1e4)])
+ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_ylabel(r"$Energy [J]$")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
+
 fig.tight_layout(w_pad=1)
 fig.set_size_inches(7.1014, 9.0971 / 2)
 plt.savefig("../doc/Figures/E_MC1e7.pdf")
@@ -69,22 +69,22 @@ plt.figure()
 #Plotting number of flips
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC[: int(1e4)], flip24_Dis[: int(1e4)], label=r"$T = 2.4, Disordered$")
-ax[0, 0].legend(loc=0)
+ax[0, 0].plot(MC[: int(1e4)], flip24_Dis[: int(1e4)])
+ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel("# Flips")
 
 
-ax[1, 0].plot(MC[: int(1e4)], flip24_Ord[: int(1e4)], label=r"$T = 2.4, Ordered$")
-ax[1, 0].legend(loc=0)
+ax[1, 0].plot(MC[: int(1e4)], flip24_Ord[: int(1e4)])
+ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel("# Flips")
 
-ax[0, 1].plot(MC[: int(1e4)], flip1_Dis[: int(1e4)], label=r"$T = 1, Disordered$")
-ax[0, 1].legend(loc=0)
+ax[0, 1].plot(MC[: int(1e4)], flip1_Dis[: int(1e4)])
+ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel("# Flips")
 
-ax[1, 1].plot(MC[: int(1e4)], flip1_Ord[: int(1e4)], label=r"$T = 1, Ordered$")
-ax[1, 1].legend(loc=0)
+ax[1, 1].plot(MC[: int(1e4)], flip1_Ord[: int(1e4)])
+ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 ax[1, 1].set_ylabel("# Flips")
 fig.tight_layout(w_pad=1)
@@ -95,22 +95,22 @@ plt.figure()
 #Plotting magnetization
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC[: int(1e4)], M24_Dis_mean[: int(1e4)], label=r"$T = 2.4, Disordered$")
-ax[0, 0].legend(loc=0)
+ax[0, 0].plot(MC[: int(1e4)], M24_Dis_mean[: int(1e4)])
+ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel(r"$\vert M \vert$")
 
 
-ax[1, 0].plot(MC[: int(1e4)], M24_Ord_mean[: int(1e4)], label=r"$T = 2.4, Ordered$")
-ax[1, 0].legend(loc=0)
+ax[1, 0].plot(MC[: int(1e4)], M24_Ord_mean[: int(1e4)])
+ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel(r"$\vert M \vert$")
 
-ax[0, 1].plot(MC[: int(1e4)], M1_Dis_mean[: int(1e4)], label=r"$T = 1, Disordered$")
-ax[0, 1].legend(loc=0)
+ax[0, 1].plot(MC[: int(1e4)], M1_Dis_mean[: int(1e4)])
+ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel(r"$\vert M \vert$")
 
-ax[1, 1].plot(MC[: int(1e4)], M1_Ord_mean[: int(1e4)], label=r"$T = 1, Ordered$")
-ax[1, 1].legend(loc=0)
+ax[1, 1].plot(MC[: int(1e4)], M1_Ord_mean[: int(1e4)])
+ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 ax[1, 1].set_ylabel(r"$\vert M \vert$")
 fig.tight_layout(w_pad=1)
@@ -128,6 +128,8 @@ bins1 = np.arange(
 fig, ax = plt.subplots(2, 1)
 ax[0].hist(E24_Dis[int(5e3) :] / 400, bins=bins24, density=True)
 ax[1].hist(E1_Dis[int(5e3) :] / 400, bins=bins1, density=True)
+ax[0].set_title(r"$K_BT/J = 2.4$")
+ax[1].set_title(r"$K_BT/J = 1$")
 fig.set_size_inches(3.35289, 9.0971 / 2)
 ax[1].set_xlabel(r"$E / N^2$ [J]")
 ax[0].set_ylabel(r"% of occurences")
@@ -136,10 +138,7 @@ fig.tight_layout(w_pad=1)
 plt.savefig("../doc/Figures/histogram.pdf")
 
 #Calculating variance
-Var_E24_Dis = fast_cumsum(E24_Dis ** 2, MC, 400) - fast_cumsum(E24_Dis, MC, 400) ** 2
-Var_E1_Dis = fast_cumsum(E1_Dis ** 2, MC, 400) - fast_cumsum(E1_Dis, MC, 400) ** 2
-
-Var_E24_dis = Var_E24_Dis[-1]
-Var_E1_dis = Var_E1_Dis[-1]
-print("Var(E24_Dis) = {0}".format(Var_E24_dis))
-print("Var(E1_Dis) = {0}".format(Var_E1_dis))
+Var24 = np.var(E24_Dis[int(5e3):]/400) #/ MC[-1]
+Var1 = np.var(E1_Dis[int(5e3):]/400)
+print("Var(E24_Dis) = {0}, Error estimate = {1}".format(Var24, Var24/MC[-1]))
+print("Var(E1_Dis) = {0}, Error estimate = {1}".format(Var1, Var1/MC[-1]))

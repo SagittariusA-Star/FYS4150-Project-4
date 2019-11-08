@@ -86,7 +86,7 @@ temperature $T$. The partition function of the system discribing all statistical
 properties of the system in equilibrium and is needed to normalize the Boltzmann
 distribution is defines as the sum 
 \begin{align}
-	Z = \sum_i e^{-\beta E_i},
+	Z = \sum_{i = 1}^{2^{N^2}} e^{-\beta E_i},
 \end{align}
 over all possible microstates of the system. The mean energy and absolute magnetisation
 of the system is then given as 
@@ -340,22 +340,42 @@ correlation length will eventually span the whole system, corresponding to the
 lattice size $N$ in our case since we are limited to a finite grid. Therefore since
 $\xi\propto N$ we get that 
 \begin{align}
-	T_C(L) - T_C(L\to\infty) = aL^{-1/\nu},
+	T_C(N) - T_C(N\to\infty) = aN^{-1/\nu},
+	\label{eq:temp_crit}
 \end{align}
 where $a$ and $\nu$ are constants. Then the mean magnetisation becomes 
 \begin{align}
-	\langle M(T)\rangle \sim (T - T_C)^\beta \to L^{-\beta/\nu},
+	\langle M(T)\rangle \sim (T - T_C)^\beta \to N^{-\beta/\nu},
 \end{align}
 the heat capacity becomes 
 \begin{align}
-	C_V(T) \sim |T_C - T|^{-\alpha}\to L^{\alpha / \nu}
+	C_V(T) \sim |T_C - T|^{-\alpha}\to N^{\alpha / \nu}
 \end{align}
 and the susceptibility is 
 \begin{align}
-	\chi(T)\sim |T_C - T|^{-\gamma} \to L^{\gamma/\nu},
+	\chi(T)\sim |T_C - T|^{-\gamma} \to N^{\gamma/\nu},
 \end{align}
-where we have set $T_C(L) = T$ and $T_C(L\to\infty) = T_C$.
-Thus if we plot the mean energy and magnetisation 
+where we have set $T_C(N) = T$ and $T_C(N\to\infty) = T_C$.
+Thus if we plot the mean energy and magnetisation as well as the heat capacity
+and susceptibility as a function of temperatres we can estimate the critical
+temperature for an infinite grid $N\to \infty$. For this we use $N = 40, 60, 80$
+and $100$, and a temperature range of $T\in[2.0, 2.5]$ with 50 temperature steps. We expect that the mean energy
+and absolute magnetisation suddenly bend at $T = T_C(N)$, and that the heat
+capacity and susceptibility peak at $T = T_C(N)$. When $N\to\infty$ this peak
+will diverge. Using (\ref{eq:temp_crit}) for two grid sizes $N_1$ and $N_2$ we
+can estimate the constant $a$ to be 
+\begin{align}
+	a = \frac{T_C(N_1) - T_C(N_2)}{N_1^{-1/\nu} - N_2^{-1/\nu}},
+\end{align}
+since we know that $T_C(N\to\infty)$ is the same for all grids. Knowing $a$ we
+can use (\ref{eq:temp_crit}) to compute an estimate for $T_C(N\to\infty)$. This
+estimate can be compared to the analytical value found by \cite{onsager:1944};
+$k_BT/J = \frac{2}{\ln(1+\sqrt{2})}\approx 2.269$, for $\nu = 1$.
+As looping over several temperatures using a desently large number of Monte
+Carlo cycles is very time consuming, we parallelized the temperature loops using
+MPI and used compiler flags. To check the speed-up we timed code using diffent
+degrees of parallisation and compiler flags.
+
 
 \section{Results} \label{sec:results}
 
@@ -369,7 +389,6 @@ Thus if we plot the mean energy and magnetisation
 
 \section{Conclusion} \label{sec:conclusion}
 
-\nocite{Jensen:2019}
 
 \bibliography{ref}
 \bibliographystyle{aasjournal}

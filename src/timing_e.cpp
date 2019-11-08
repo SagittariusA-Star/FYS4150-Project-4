@@ -106,4 +106,6 @@ int main(int argc, char *argv[])
     delete[] E_result;
     delete[] M_result;
     delete[] T_array;
+    
+
 }

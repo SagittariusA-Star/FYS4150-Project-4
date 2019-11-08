@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
     int local_min = (int) std::round(T_len * rank / (double) numbProc);
     int local_max = (int) std::round(T_len * (rank + 1) / (double) numbProc);
 
-    /*
     for (int i = local_min; i < local_max; i++)    
     {   
         metropolis(MC, N, 5e3, matrix, T_array[i], E, M, accp_flips, results, rank);
@@ -125,15 +124,6 @@ int main(int argc, char *argv[])
     MPI_Allreduce(Chi_array, Chi_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(E_mean_array, E_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(M_mean_array, M_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-
-    delete[] E;
-    delete[] M;
-    delete[] accp_flips;
-    delete[] results;
-    delete[] C_array;
-    delete[] Chi_array;
-    delete[] E_mean_array;
-    delete[] M_mean_array;
 
     if (rank == 0)
     {
@@ -199,7 +189,7 @@ int main(int argc, char *argv[])
         }
         outfile.close();
     }
-    */
+    
     if (rank == 0)
     {
         cout << "Starting computation for L = 100" << endl;
@@ -224,7 +214,6 @@ int main(int argc, char *argv[])
         M_mean_array[i] = results[4];
         C_array[i] = results[1] / (T_array[i] * T_array[i]);
         Chi_array[i] = results[3] / T_array[i];
-
     }
     MPI_Allreduce(C_array, C_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(Chi_array, Chi_result, T_len, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
@@ -247,7 +236,7 @@ int main(int argc, char *argv[])
         outfile.open("L100.txt");
         outfile << " T: " << " <E>: " << "<|M|>: " << "C_V: " << "Chi: " << endl;
         for (int i = 0; i < T_len; i++)
-        {
+        {  
             outfile << setprecision(10) << setw(20) << T_array[i]
                     << setprecision(10) << setw(20) << E_result[i]
                     << setprecision(10) << setw(20) << M_result[i]
@@ -257,11 +246,14 @@ int main(int argc, char *argv[])
         outfile.close();
 
     }
-    
+
     delete[] C_result;
     delete[] Chi_result;
     delete[] E_result;
     delete[] M_result;
     delete[] T_array;
+    
     MPI_Finalize();
+    
+    return 0;   
 }

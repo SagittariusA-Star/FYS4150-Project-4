@@ -35,7 +35,8 @@ two-dimensional Ising model of interacting spins by means of a Markov Chain
 Monte Carlo (MCMC) algorithm in addition to a Metropolis algorithm. We will explore how
 different grid sizes and temperatures make the lattice behave, and how the systems energy and magnetization
 developes in time, the final aim being to estimate the critical temperature of
-the phase transition when the lattice looses its magnetization. 
+the phase transition when the lattice looses its magnetization. This is then
+compared to the analytical value found by \cite{onsager:1944}. 
 
 This paper will present needed theory and implementation of the theory in the Method
 section \ref{sec:method}, the results will be presented in the Results section
@@ -62,12 +63,19 @@ The energy of the lattice is defined by
 	\label{eq:energy}
 \end{align}
 where $\langle kl\rangle$ denotes the sum over the nearest neighboors and the
-spins take the values $s_i = \pm 1$ and $J$ has units energy. The magnetization is defined similarly as 
+spins take the values $s_i = \pm 1$ and $J$ has units energy. When counting the
+energies we choose to use periodic boundaries, meaning that the nearest
+neighboor of a spin $s_{i,N-1}$ at the edge of the lattice is the spin $s_{i,0}$
+at the opposite edge of the lattice. This is done so as to simulate a lattice
+that extends infinitly in space. Note that it is the interaction between two
+neighbooring spins that contribute to the energy, thus each pair only needs to
+be counted one time.
+The magnetization is defined similarly as 
 \begin{align}
 	M = \sum_i s_i,	
 	\label{eq:magnetization}
 \end{align} 
-simply being the sum of the systems spins. The probability of the system having
+simply being the sum of the systems spins. The probability density function (PDF) of the system having
 a cetain energy state is given by the Boltzmann distribution 
 \begin{align}
 	P(E_i) = \frac{1}{Z}e^{-\beta E_i},
@@ -103,7 +111,13 @@ responds to an external magnetic field, is defined as
 	& = \frac{1}{k_BT}\left(\langle M^2\rangle - \langle |M|\rangle^2\right) = \frac{\sigma^2_{|M|}}{k_BT}.
 \end{align} 
 These thermodynamical quantities will later be usefull when estimating the
-critical temperature of the phase transition when the system looses its net magnetization.
+critical temperature of the phase transition when the system looses its net
+magnetization.
+When later implementing these thermodynamical quantities numerically we will
+use natural units where $k_B = 1$ and the energy is in units $J/k_B$, the
+temperature will have dimensions energy $k_BT/J$. Also the magnetization is in
+this case a unitless quantity, and due to the energy and temperature scaling the
+heat capacity and (HUSK ENHETER)
 
 \subsection{Analytical Solutions to the $2\times2$ Lattice}\label{subsec:two_by_two_lattice}
 Before discribing the algorithm modeling the time development of the lattice, we
@@ -152,7 +166,7 @@ Next this leads to the heat capacity being
 \begin{align}
 	C_V &= \dv{\langle E \rangle}{T} = -\frac{1}{k_BT^2}\dv{\langle E\rangle}{\beta} \\
 	&= -\frac{1}{k_BT^2}\dv{\beta}\left(-\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}\right) \\
-	&= \frac{192(\cosh(8J\beta) + 1)}{(\cosh(8J\beta) + 3)^2},
+	&= \frac{192(\cosh(8J\beta) + 1)}{k_B T^2(\cosh(8J\beta) + 3)^2},
 \end{align}
 and the susceptibility (when using the absolute magnetization) is 
 \begin{align}
@@ -170,21 +184,11 @@ in time. The algorithm used to simulate the time evolution of the lattice is a
 Markov Chain Monte Carlo algorithm. We will, however, only outline the algorithm
 used here, which is derived in detail in Ch. 13 by \cite{jensen:2015}. 
 
-The first step in the algorithm is to compute the energy and magnetisation of a
+The first step in the algorithm is to compute the initial energy and magnetisation of a
 lattice of size $N\times N$, which can be ordered or disordered, depending on the
 wanted simulation.
-When computing the energies using (\ref{eq:energy}) we use periodic boundaries
-for the sum over nearest neighboors, in order to simulate an infinite grid.
-Because it is the interaction between two neighbooring spins that count towards
-the energy, we only want to count each pair of spins one time. Thus in practice
-we can count the contribution to each spin only to the right and downwards, as
-this requires half the amount of floting point operations (FLOPs) as when
-counting all nearest neighboors and deviding it by two. The periodic boundary
-then for instance makes the spin $s_{i,N}$ at a vertical lattice boundary get a
-contribution from the spin $s_{i,0}$, and similarly for the horizontal
-boundaries. The nearest neighboors at the boundaries are thus wrapes around the
-lattice. The magnetization is simply found by summing up all spins as discribed
-by (\ref{eq:magnetization}).
+This is simply done by using (\ref{eq:energy}) and \ref{eq:magnetization} as
+discribed previously.
 
 We simulate the time evolution by looping through a number of $M$ Monte Carlo
 cycles. Then at each Monte Carlo cycle we sweep through the lattice $N\times N$
@@ -212,7 +216,7 @@ spin $s_l^2 = -s_l^1$. The magnetization change is
 since the difference in magnetization at a spin flip is 2. 
 
 The energy difference plays a key role when determaining if the suggested spin
-flip should be accepted. The acceptance rule will be modeled by a Metropolis
+flip should be accepted. The acceptance rule will be modelled by a Metropolis
 algorithm and will be discribes in the next subsection. 
 
 In case the spin is fliped we update the mean values $\langle E \rangle$ and
@@ -234,7 +238,90 @@ spin is fliped individually.
 \subsection{The Acceptance Rule - The Metropolis algorithm}
 When modeling the acceptance rule we use the Metropolis algorithm. We will here
 only outline the implementation of the Metropolis algorithm used following the
-derivation done in Ch. 13 \cite{jensen:2015}.
+derivation done in Ch. 13 \cite{jensen:2015}. Since we don't know the transition
+probability when suggesting a spin flip, we can model it by looking at the ratio
+between the Boltzmann distribution of the state after and before the suggested
+flip 
+\begin{align}
+	\frac{P(E_2)}{P(E_1)} = \frac{\frac{1}{Z}e^{-\beta E_2}}{\frac{1}{Z}e^{-\beta E_1}} = e^{-\beta\Delta E},
+\end{align}
+so as to eliminate the partition function, which becomes hard to calculate as
+the grid increases since it contains a sum over $2^{N^2}$ microstates. This can
+quickly result in overflow. The naive way to mode the transition would be to
+only accept transitions into a lower energy state, i.e. where $\Delta E < 0$, as
+a system generally tends towards the state of lowest energy. However, we don't want the
+system to accept exlusively lower energies, as this is a major source of bias,
+because the system than just quickly will freeze at the lowest energy state
+possible. We therefore model the transition rule as 
+
+\begin{align}
+	r \leq e^{-\beta\Delta E},
+\end{align}
+where $r\in [0, 1]$ is a number drawn from a uniform PDF. Since $e^{-\beta\Delta
+E}$ can be either greater or smaller than one, the transition rule can also make
+the system transition to a less likely state once in a while. Therefore the
+system will tend towards the equilibrium state, eventually oscillating arount
+it, but never totally freeze.
+Note that sice we know all the possible values of $\Delta E$ we can precalculate
+the possible values of $e^{-\beta\Delta E}$, thus circumventing unnecessary
+FLOPs.
+
+\subsection{The Analysis}
+Now that we have an algorithm computing the discribed thermodynamic quantites,
+we can compare the output to the known analytical values for a $2\times 2$ grid
+for say a temperature $k_BT/J = 1.0$.
+
+The next step would be to choose a larger lattice, for instance $N = 20$, both
+with an ordered and disordered initial spin configuration. Then we let the
+system run through a large number of Monte Carlo cycles, representing a long
+time, and computing the sample mean of energy and absolute magnetization
+\begin{align}
+	\langle E\rangle &= \frac{1}{m}\sum_{i = 1}^m E_i\\
+	\langle |M|\rangle &= \frac{1}{m}\sum_{i = 1}^m |M|_i,
+\end{align} 
+at each Monte Carlo cycle $m$. This cumulative mean we can use to find how much
+time, i.e. how many Monte Carlo cycles, the system needs to reach a state close
+to the most likely state where $\langle E \rangle$ and $\langle |M|\rangle$
+start flattening out in general.
+
+This is important since we only want to sample energies and magnetization for
+the thermodynamical quantites $C_V$ and $\chi$ later when looking at the phase
+transitions. 
+Also we plot the number of accepted flips as a function of the Monte Carlo
+cycles to see how much the system changes states at any given time.
+
+To further see if the lattice behaves as expected we can approximate the
+Boltzmann distribution $P(E)$ for a given temperature $k_BT/J$ by making a
+histogram of the energy states of the system. We would expect that for a low
+temperatue like $k_BT / J = 1.0$ that $P(E)$ approaches a $\delta$-function at
+small energies as
+$\beta$ becomes large, and the exponential function $P(E)$ quickly dies out when
+energies become larger. The lattice effectively freezes at the lowest possible
+energy state. Therewhile for higher temperatures like $k_BT/J$ the PDF
+will look more like a Gaussian distribution as the system has meany more
+possible (symetric) energy states around the equilibrium that it can oscillate
+around. 
+
+The distributions are than compared to the sample variance given by the central
+limit theorem \citep[p. 357]{jensen:2015} defined as 
+\begin{align}
+	\sigma^2 = \frac{\sigma^2_E}{m},
+\end{align}
+for the number of experiments (Monte Carlo cycles) $m$ and the energy variance
+$\sigma_E^2 = \langle E^2\rangle - \langle E \rangle^2$. This will be an error
+estimate of the statistical experiment as it measures the deviation between the
+true mean and the sample mean. Also the spread in the histogram is compared to
+the standard diviation $\sigma_E$.
+
+Next, we want to study the phase transition where the lattice goes from having a
+magnetization to loosing its net magnetization. We follow here the theory presented
+by \cite{jensen:2019}. Near the critical temperature
+$T_C$ for when the lattice undergoes the phase transition, the mean magnetization is
+given by 
+\begin{align}
+	\langle M(T) \rangle \sim (T-T_C)^\beta,
+\end{align}
+where $\beta = 1/8$ is the so-called 
 
 \section{Results} \label{sec:results}
 

@@ -32,10 +32,12 @@ everything from political science, where one could model outcomes of a vote in a
 two party system, to modeling phase transitions in solid states physics. In this
 paper we will focus on the latter, where we will model a time evolving
 two-dimensional Ising model of interacting spins by means of a Markov Chain
-Monte Carlo (MCMC) algorithm in addition to a Metropolis algorithm. We will explore how
+Monte Carlo (MCMC) algorithm in addition to a Metropolis algorithm as described
+by Ch. 3. and 4. by \cite{newman:2019}. We will explore how
 different grid sizes and temperatures make the lattice behave, and how the systems energy and magnetisation
 developes in time, the final aim being to estimate the critical temperature of
-the phase transition when the lattice looses its magnetisation. This is then
+the phase transition when the lattice looses its magnetisation, as presented in
+Ch. 5. and 6. in \cite{plischke:2006}. This is then
 compared to the analytical value found by \cite{onsager:1944}. 
 
 This paper will present needed theory and implementation of the theory in the Method
@@ -47,29 +49,18 @@ section \ref{sec:method}, the results will be presented in the Results section
 \subsection{The Ising Model and Important Quantities from Statistical Menchanics} \label{subsec:ising_model}
 The physical system considered by this paper will be a two-dimensional Ising
 model, consisting of a grid of $N\times N$ magnetic spins. Each spin can have
-the value $s = +1$ ($\uparrow$) or $s = -1$ ($\downarrow$), and they interact only with their nearest neighboors. An
-example of such a lattice is 
-\begin{align}
-	\begin{smallmatrix}
-		\uparrow & \downarrow & \cdots &\uparrow \\
-		\uparrow & \uparrow & \cdots & \downarrow \\
-		\vdots & \ddots & \ddots & \vdots \\
-		\downarrow & \uparrow & \cdots & \uparrow.
-	\end{smallmatrix}
-\end{align}
-The energy of the lattice is defined by 
+the value $s = +1$ or $s = -1$, and they interact only with their nearest neighbours.
+The energy of the lattice is defined by the interaction of each neighbouring
+spin pair as
 \begin{align}
 	E = -J\sum_l\sum_{\langle kl\rangle} s_k s_l,
 	\label{eq:energy}
 \end{align}
-where $\langle kl\rangle$ denotes the sum over the nearest neighboors and the
-spins take the values $s_i = \pm 1$ and $J$ has units energy. When counting the
+where $\langle kl\rangle$ denotes the sum over the nearest neighbours and $J$ has units energy. When counting the
 energies we choose to use periodic boundaries, meaning that the nearest
-neighboor of a spin $s_{i,N-1}$ at the edge of the lattice is the spin $s_{i,0}$
+neighbour of a spin $s_{i,N-1}$ at the edge of the lattice is the spin $s_{i,0}$
 at the opposite edge of the lattice. This is done so as to simulate a lattice
-that extends infinitly in space. Note that it is the interaction between two
-neighbooring spins that contribute to the energy, thus each pair only needs to
-be counted one time.
+that extends infinitly in space. 
 The magnetisation is defined similarly as 
 \begin{align}
 	M = \sum_i s_i,	
@@ -80,34 +71,31 @@ a cetain energy state is given by the Boltzmann distribution
 \begin{align}
 	P(E_i) = \frac{1}{Z}e^{-\beta E_i},
 \end{align}
-
 where $\beta = \frac{1}{k_B T}$ for the Boltzmann constant $k_B$ and the
-temperature $T$. The partition function of the system discribing all statistical
-properties of the system in equilibrium and is needed to normalize the Boltzmann
-distribution is defines as the sum 
+temperature $T$. The partition function of the system describing all statistical
+properties of the system in equilibrium is given as 
 \begin{align}
-	Z = \sum_{i = 1}^{2^{N^2}} e^{-\beta E_i},
+	Z = \sum_{i} e^{-\beta E_i},
 \end{align}
-over all possible microstates of the system. The mean energy and absolute magnetisation
+over all possible microstates ($2^{N^2}$ in total for a $2\times 2$ grid) of the system. The mean energy and absolute magnetisation
 of the system is then given as 
 \begin{align}
-	\langle E \rangle &= \sum_i E_i P(E_i) = \sum_i \frac{E_i}{Z}e^{-\beta E_i} = \pdv{\ln Z}{\beta}\\
-	\langle |M| \rangle &= \sum_i |M_i| P(E_i) = \sum_i \frac{|M_i|}{Z}e^{-\beta E_i} 
+	\langle E \rangle &= \sum_{i} E_i P(E_i) = \sum_{i} \frac{E_i}{Z}e^{-\beta E_i} = \pdv{\ln Z}{\beta}\\
+	\langle |M| \rangle &= \sum_{i} |M_i| P(E_i) = \sum_{i} \frac{|M_i|}{Z}e^{-\beta E_i} 
 \end{align}
-and represent the most likely state of equilibrium of the system.
+and represent the most likely state of the system.
 Another important quantity from
-thermodynamics is the heat capacity measuring the change in temperature $T$ for
-a given change in the systems heat. The heat capacity at constant volume is given as 
+thermodynamics is the heat capacity measuring the change heat for a given
+temperature change. The heat capacity at constant volume is given as 
 \begin{align}
-	C_V &= \dv{\langle E \rangle}{T} = \frac{1}{k_B T^2}\left(\frac{1}{Z}\sum_i E_i^2 e^{-\beta E_i} - \langle E\rangle^2\right) \\
+	C_V &= \dv{\langle E \rangle}{T} = \frac{1}{k_B T^2}\left(\frac{1}{Z}\sum_{i} E_i^2 e^{-\beta E_i} - \langle E\rangle^2\right) \\
 	& = \frac{1}{k_BT^2}\left(\langle E^2\rangle - \langle E\rangle^2\right) = \frac{\sigma^2_E}{k_B T^2},
 \end{align}
-thus being analogous to the variance in energy states. The sum again runs over
-all microstates.
+thus being analogous to the variance in energy states.
 Finally, the magnetic susceptibility measuring how the systems magnetisation
 responds to an external magnetic field, is defined as 
 \begin{align}
-	\chi &= \beta\left(\sum_i\frac{M_i^2}{Z}e^{-\beta E_i} - \langle |M_i|\rangle^2 \right)\\
+	\chi &= \beta\left(\sum_{i}\frac{M_i^2}{Z}e^{-\beta E_i} - \langle |M_i|\rangle^2 \right)\\
 	& = \frac{1}{k_BT}\left(\langle M^2\rangle - \langle |M|\rangle^2\right) = \frac{\sigma^2_{|M|}}{k_BT}.
 \end{align} 
 These thermodynamical quantities will later be usefull when estimating the
@@ -122,7 +110,7 @@ heat capacity and (HUSK ENHETER)
 \subsection{Analytical Solutions to the $2\times2$ Lattice}\label{subsec:two_by_two_lattice}
 Before discribing the algorithm modeling the time development of the lattice, we
 show the analytical solutions to the mean energy and absolute magnetisation as
-well as the heat capacity and the susceptibility, so as to later enable a
+well as the heat capacity and the susceptibility as shown in \ref{subsec:ising_model}, so as to later enable a
 comperison of the numerical results to known analytically quantities. When
 counting the energy and magnetisation of the $2\times2$ lattice as discribed in
 the previous subsection we get the possible states of the system shown in Table
@@ -146,59 +134,103 @@ the previous subsection we get the possible states of the system shown in Table
 Using the possible energy states in Table \ref{tab:possible_energy} we can write
 the partition function of the system as 
 \begin{align}
-	Z &= \sum_i e^{\beta E_i} = e^{8J\beta} + 4 + 4 + 4 + 2e^{-8J\beta} + e^{8J\beta} \\
-	&= 4\cosh(8J\beta) + 12.
+	Z = \sum_{i = 1}^{2^{N^2}} e^{\beta E_i} = 4\cosh(8J\beta) + 12.
 \end{align}
 Using this we get the expectation value for the energy to be  
 \begin{align}
-	\langle E\rangle  &= \frac{1}{Z}\sum_i E_i e^{-E_i\beta} \\
-	&= \frac{1}{Z}\left(-8J + 2\cdot 8Je^{-8J\beta} - 8Je^{8J\beta}\right) \\
-	&= -\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}.
+	\langle E\rangle  = \frac{1}{Z}\sum_{i = 1}^{2^{N^2}} E_i e^{-E_i\beta} = -\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}.
 \end{align}
 Similarly we find that the expectation value of the absolute magnetisation is
 given by 
 \begin{align}
-	\langle |M| \rangle &= \frac{1}{Z}\sum_i |M_i|e^{-E_i\beta} \\
-	&= \frac{1}{z}\left(4e^{8J\beta} + 4\cdot 2 + 4\cdot 2 4e^{8J\beta}\right) \\
-	&= \frac{2e^{8J\beta} + 4}{\cosh(8J\beta) + 3}.
+	\langle |M| \rangle = \frac{1}{Z}\sum_{i = 1}^{2^{N^2}} |M_i|e^{-E_i\beta} = \frac{2e^{8J\beta} + 4}{\cosh(8J\beta) + 3}.
 \end{align}
 Next this leads to the heat capacity being 
 \begin{align}
-	C_V &= \dv{\langle E \rangle}{T} = -\frac{1}{k_BT^2}\dv{\langle E\rangle}{\beta} \\
-	&= -\frac{1}{k_BT^2}\dv{\beta}\left(-\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}\right) \\
-	&= \frac{192(\cosh(8J\beta) + 1)}{k_B T^2(\cosh(8J\beta) + 3)^2},
+	C_V = \dv{\langle E \rangle}{T} = -\frac{1}{k_BT^2}\dv{\langle E\rangle}{\beta} = \frac{192(\cosh(8J\beta) + 1)}{k_B T^2(\cosh(8J\beta) + 3)^2},
 \end{align}
 and the susceptibility (when using the absolute magnetisation) is 
 \begin{align}
 	\chi_{|M|} &= \frac{1}{k_BT}\left(\langle M^2 \rangle - \langle |M|\rangle^2 \right) \\
-	&= \frac{1}{k_BT}\left(\sum_i \frac{M_i^2}{Z}e^{-E_i\beta} - \langle |M|\rangle^2\right) \\
 	&= \frac{1}{k_BT}\left(\frac{8e^{8J\beta} + 8}{\cosh(8J\beta) + 3} -\frac{(2e^{8J\beta} + 4)}{(\cosh(8J\beta) + 3)^2} \right).
 \end{align}
 
-These analytical quantities can now be compares to the numerical results.
+These analytical quantities can be compares to the numerical results.
 
-\subsection{The Markov Chain Monte Carlo Algorithm}
-Now that we have looked at how the lattice of interactign spins is set up, we
-can begin discribing the algorithm used to simulate the evolution of the lattice
+\subsection{The MCMC and Metropolis Algorithms}
+Now that we have looked at how the lattice of $N\times N$ interacting spins is set up, we
+can begin describing the algorithm used to simulate the evolution of the lattice
 in time. The algorithm used to simulate the time evolution of the lattice is a
-Markov Chain Monte Carlo algorithm. We will, however, only outline the algorithm
-used here, which is derived in detail in Ch. 13 by \cite{jensen:2015}. 
+Markov Chain Monte Carlo (MCMC) algorithm. We will, however, only outline the algorithm
+used here, which is derived in detail in Ch. 3. and 4. of \cite{newman:2019}.
+The main idea behind a Markov Chain is that we want to let the system, in our
+case being the lattice of spins, transition from one state $w_i$ to the next state $w_j$
+in time. This can be written as 
+\begin{align}
+	w_j = W(i\to j)w_i,
+\end{align}
+where $W(i\to j)$ is the transition matrix quantifying the probability
+transitioning to $w_j$. If we iterate over many such changes-of-states
+the system will converge to the state corresponding to the eigenvector of the
+transition probability matrix $W(i\to j)$ having the largest eigenvalue. Since
+$W(i\to j)$ is a stochastic matrix, the largest eigenvalue is one. Applying the
+matrix to an initial state $w_i$ many times the system thus converges towards equilibrium, effectively loosing the time dependence since the change from each
+iteration to the next becomes negligable. This means that effectively
+\begin{align}
+	w(t_i) - w(t_i + \epsilon) = 0,
+\end{align}
+for a small change $\epsilon$, near the equilibrium position. This can be
+rewritten as 
+\begin{align}
+	\sum_i W(i \to j)w_i - W(j \to i)w_j = 0,
+	\label{eq:sum_of_states}
+\end{align}
+simply multiplying out the matrix product of the forward and backward
+transitions. There are multiple ways (\ref{eq:sum_of_states}) can be fulfilled,
+but we impose detailed balance \citep[Ch. 3. and 4.]{newman:2019} so that each element of the sum
+fulfills the equation, making
+\begin{align}
+	W(j \to i)w_j - W(i \to j)w_i = 0.
+\end{align}
+Now, because we do not know the transition probabilities $W$ because they are
+unknown or too complicated to model, we can use the above relation to model the transition
+probability using the Metropolis algorithm \citep[Ch. 3. and 4.]{newman:2019}. From the detailed
+balance we get that 
+\begin{align}
+	\frac{w_j}{w_i} = \frac{W(j \to i)}{W(i \to j)} \equiv r.
+	\label{eq:trans_prob}
+\end{align}
+Since the $w$'s are probabilities, the l.h.s. quantifies whether the next state
+is more probable than the previous state. Thus if the ratio
+$\frac{w_j}{w_i}\geq 1$ we let the system transition to the next state as the
+forward transition probability $W(j \to i)$ is larger than the backwards
+transition probability $W(i \to j)$. However if the l.h.s. of
+(\ref{eq:trans_prob}) is less than one there is a finite probability that the
+system may transition forwards or backwards. This must be included in the acceptance rule so as
+to not include a bias freezing the system at the state of highest probability,
+as we want the system to transition to as many, if not all possible states.
 
-The first step in the algorithm is to compute the initial energy and magnetisation of a
-lattice of size $N\times N$, which can be ordered or disordered, depending on the
-wanted simulation.
-This is simply done by using (\ref{eq:energy}) and \ref{eq:magnetisation} as
-discribed previously.
+In our case we can rewrite (\ref{eq:trans_prob}) as 
 
-We simulate the time evolution by looping through a number of $M$ Monte Carlo
+\begin{align}
+	r \leq \frac{P(E_2)}{P(E_1)} = \frac{\frac{1}{Z}e^{-\beta E_2}}{\frac{1}{Z}e^{-\beta E_1}} = e^{-\beta\Delta E}, 
+\end{align}
+where $r\in[0, 1]$ is a number drawn from a uniform distribution, effectively
+modeling all transition posibilities and at the same time eliminate the unknown
+partition function $Z$. 
+
+When implementing the Markov Chain in practice we first must initialize the
+system by computing the $N\times N$ lattice energy and magnetisation.
+This is simply done by using (\ref{eq:energy}) and (\ref{eq:magnetisation}) as
+described previously.
+
+We simulate the time evolution by looping through a number of $m$ Monte Carlo
 cycles. Then at each Monte Carlo cycle we sweep through the lattice $N\times N$
-times and at each sweep we pick a random grid point $i, j$. We sweep over random
-grid points $N\times N$ times to roughly ensure that the whole grid is covered.
-Each sweep is in practice done by
-simply drawing a random index from a uniform distribution $i,j\in[0, N-1]$,
-using a Mersenne-Twister pseudo-random number generator. At the random grid
-point we compute what energy the lattice would have if we were to flip the spin
-around. Since each spin only has four different nearest neighboors contributiong
+times to roughly cover the whole grid, by picking a random grid point $i, j$
+drawn from a uniform distribution $i,j\in[0, N-1]$ using a Mersenne-Twister
+pseudo-random number generator, at each sweep. At each sweep we
+suggest a spin flip and compute the energy of the lattice after the flip. Since each spin only has four different nearest neighbours
+contributiong
 to
 the energy we find that the change in energy for any suggested flip is among
 five possible values $\Delta E \in {-8J, -4J, 0, 4J, 8J}$. Both the change in
@@ -213,58 +245,17 @@ spin $s_l^2 = -s_l^1$. The magnetisation change is
 \begin{align}
 	\Delta M = 2s_l^2,
 \end{align}
-since the difference in magnetisation at a spin flip is 2. 
+since the difference in magnetisation at a spin flip is 2. This way of
+suggesting a new state is more efficient than to compute the energy diffence
+using a whole new lattice configuration, as it requires a lot less FLOPs.
 
-The energy difference plays a key role when determaining if the suggested spin
-flip should be accepted. The acceptance rule will be modelled by a Metropolis
-algorithm and will be discribes in the next subsection. 
+The differnece in energy is than used to deterain whether the suggested spin
+flip is accepted or not through the described Metropolis algorithm.
 
-In case the spin is fliped we update the mean values $\langle E \rangle$ and
-$\langle |M| \rangle$ and the variances $\sigma_E^2$ and $\sigma_{|M|}^2$, then
-jumping to the next Monte Carlo cycle. If the flip is not accepted no changes to
-the means and variances is made.
+For each accepted spin flip the energy and magnetisation sample means and variances are
+updated. After many cycles the system will than converge to the most like state
+$\langle E\rangle$, and oscillate around it. 
 
-This is done for each Monte Carlo cycle. When letting the number of Monte Calro
-cycles increas the system will than gradually converge towards the most likely
-state $\langle E \rangle$, eventually oscillating around it. The computed sample
-means and variances will than gradually approach the true means and variances.
-
-One could alternatively to flipping each spin individually generate a new random
-lattice and compute the total energy difference for each Monte Carlo to deterain whether
-the new configuration should be accepted. However, this is extremely
-inefficient, as it reequires many more FLOPs per Monte Carlo cycle than if each
-spin is fliped individually.
-
-\subsection{The Acceptance Rule - The Metropolis algorithm}
-When modeling the acceptance rule we use the Metropolis algorithm. We will here
-only outline the implementation of the Metropolis algorithm used following the
-derivation done in Ch. 13 \cite{jensen:2015}. Since we don't know the transition
-probability when suggesting a spin flip, we can model it by looking at the ratio
-between the Boltzmann distribution of the state after and before the suggested
-flip 
-\begin{align}
-	\frac{P(E_2)}{P(E_1)} = \frac{\frac{1}{Z}e^{-\beta E_2}}{\frac{1}{Z}e^{-\beta E_1}} = e^{-\beta\Delta E},
-\end{align}
-so as to eliminate the partition function, which becomes hard to calculate as
-the grid increases since it contains a sum over $2^{N^2}$ microstates. This can
-quickly result in overflow. The naive way to mode the transition would be to
-only accept transitions into a lower energy state, i.e. where $\Delta E < 0$, as
-a system generally tends towards the state of lowest energy. However, we don't want the
-system to accept exlusively lower energies, as this is a major source of bias,
-because the system than just quickly will freeze at the lowest energy state
-possible. We therefore model the transition rule as 
-
-\begin{align}
-	r \leq e^{-\beta\Delta E},
-\end{align}
-where $r\in [0, 1]$ is a number drawn from a uniform PDF. Since $e^{-\beta\Delta
-E}$ can be either greater or smaller than one, the transition rule can also make
-the system transition to a less likely state once in a while. Therefore the
-system will tend towards the equilibrium state, eventually oscillating arount
-it, but never totally freeze.
-Note that sice we know all the possible values of $\Delta E$ we can precalculate
-the possible values of $e^{-\beta\Delta E}$, thus circumventing unnecessary
-FLOPs.
 
 \subsection{The Analysis}
 Now that we have an algorithm computing the discribed thermodynamic quantites,
@@ -274,18 +265,17 @@ for say a temperature $k_BT/J = 1.0$.
 The next step would be to choose a larger lattice, for instance $N = 20$, both
 with an ordered and disordered initial spin configuration. Then we let the
 system run through a large number of Monte Carlo cycles, representing a long
-time, and computing the sample mean of energy and absolute magnetisation
+time, and computing the sample mean of energy and absolute magnetisation as
 \begin{align}
 	\langle E\rangle &= \frac{1}{m}\sum_{i = 1}^m E_i\\
-	\langle |M|\rangle &= \frac{1}{m}\sum_{i = 1}^m |M|_i,
+	\langle |M|\rangle &= \frac{1}{m}\sum_{i = 1}^m |M_i|,
 \end{align} 
 at each Monte Carlo cycle $m$. This cumulative mean we can use to find how much
 time, i.e. how many Monte Carlo cycles, the system needs to reach a state close
 to the most likely state where $\langle E \rangle$ and $\langle |M|\rangle$
-start flattening out in general.
-
-This is important since we only want to sample energies and magnetisation for
-the thermodynamical quantites $C_V$ and $\chi$ later when looking at the phase
+start flattening out. This is deterained by a by-eye estimate. This is used as a
+starting time for the later sampling of energies and magnetisation for
+the thermodynamical quantites $C_V$ and $\chi$ when looking at the phase
 transitions. 
 Also we plot the number of accepted flips as a function of the Monte Carlo
 cycles to see how much the system changes states at any given time.
@@ -299,7 +289,7 @@ $\beta$ becomes large, and the exponential function $P(E)$ quickly dies out when
 energies become larger. The lattice effectively freezes at the lowest possible
 energy state. Therewhile for higher temperatures like $k_BT/J$ the PDF
 will look more like a Gaussian distribution as the system has meany more
-possible (symetric) energy states around the equilibrium that it can oscillate
+possible (symmetric) energy states around the equilibrium that it can oscillate
 around. 
 
 The distributions are than compared to the sample variance given by the central
@@ -313,17 +303,17 @@ estimate of the statistical experiment as it measures the deviation between the
 true mean and the sample mean. Also the spread in the histogram is compared to
 the standard diviation $\sigma_E$.
 
-Next, we want to study the phase transition where the lattice goes from having a
-magnetisation to loosing its net magnetisation. In the theory presented by
-\cite{jensen:2019} we see that many physical properties of the system near the
-critical temperature can be discribed by a power law. Near the critical temperature
+Next, we want to study the phase transition where the lattice looses its net
+magnetisation. In the theory presented in Ch. 5. and 6. \cite{plischke:2006} we see that many
+physical properties of the system near the
+critical temperature can be described by a power law. Near the critical temperature
 $T_C$ for when the lattice undergoes the phase transition, the mean magnetisation is
 given by 
 \begin{align}
 	\langle M(T) \rangle \sim (T-T_C)^\beta,
 \end{align}
 where $\beta = 1/8$ is the so-called critical exponent. The heat capacity and
-the susceptibility follow a analogous relation as
+the susceptibility follow analogous relations as
 \begin{align}
 	C_V(T) &\sim |T_C - T|^\alpha \\
 	\chi(T) &\sim |T_C - T|^\gamma,
@@ -334,11 +324,12 @@ The correlation length is a measure of how far two correlated spins are
 separated. As the temperatue $T$ appreaches the critical temperature $T_C$, the
 correlation length increases as more and more of the lattice spins are correlated, exerting a divergent behaviour close to $T_C$ as 
 \begin{align}
-	\xi(T) = |T_C - T|^{-nu},
+	\xi(T) = |T_C - T|^{-\nu},
 \end{align}
 where we let $\nu = 1$. Since we study a second order phase transition the
-correlation length will eventually span the whole system, corresponding to the
-lattice size $N$ in our case since we are limited to a finite grid. Therefore since
+correlation length will eventually span the whole system, in our case being
+limited to a finite grid this corresponds to the
+lattice size $N$. Therefore since
 $\xi\propto N$ we get that 
 \begin{align}
 	T_C(N) - T_C(N\to\infty) = aN^{-1/\nu},
@@ -384,6 +375,33 @@ degrees of parallisation and compiler flags.
 	\caption{}
 	\label{fig:thermo_quants}
 \end{figure*}
+
+\begin{deluxetable}{ccc}
+	%\tablewidth{0pt}
+	\tablecaption{Table showing the timing of a loop over 50 different temperatres using $10^6$ Monte Carlo Cycles for each loop iteration. The grid size for the lattice used was $N = 10$. \label{tab:timing}}
+	%\tablecomments{}
+	\tablecolumns{3}
+	\tablehead{Threads & Flag & Run time [s]}
+	\startdata
+	1 & -O3 & 195.636 \\
+	4 & -O3 & 55.539	\\
+	8 & -O3 & 45.61	\\
+	8 & -O1 & 220.689   
+	\enddata
+\end{deluxetable}
+
+\begin{deluxetable}{lcc}
+	%\tablewidth{0pt}
+	\tablecaption{Table showing the variance in the energy $\sigma_E^2$ and the variance according to the central limit theorem $\sigma^2$ for to temperatures. The grid size used was $N = 20$ and $10^6$ Monte Carlo cycles with a sample start at 5000 cycles.\label{tab:variances}}
+	%\tablecomments{}
+	\tablecolumns{3}
+	\tablehead{$k_BT / J$ & $\sigma_E^2$ [UNITS] & $\sigma^2$ [UNIT]}
+	\startdata
+	1.0 & $5.848\cdot 10^{-5}$ & $5.848\cdot 10^{-12}$ \\
+	1.4 & $0.0203$ & $2.03\cdot 10^{-9}$	
+	\enddata
+\end{deluxetable}
+
 
 \section{Discussion} \label{sec:discussion}
 

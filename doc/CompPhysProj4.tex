@@ -150,14 +150,14 @@ the partition function of the system as
 	&= 4\cosh(8J\beta) + 12.
 \end{align}
 Using this we get the expectation value for the energy to be  
-\begin{align}
+\begin{align}\label{eq:analyticalE}
 	\langle E\rangle  &= \frac{1}{Z}\sum_i E_i e^{-E_i\beta} \\
 	&= \frac{1}{Z}\left(-8J + 2\cdot 8Je^{-8J\beta} - 8Je^{8J\beta}\right) \\
 	&= -\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}.
 \end{align}
 Similarly we find that the expectation value of the absolute magnetisation is
 given by 
-\begin{align}
+\begin{align}\label{eq:analyticalmag}
 	\langle |M| \rangle &= \frac{1}{Z}\sum_i |M_i|e^{-E_i\beta} \\
 	&= \frac{1}{z}\left(4e^{8J\beta} + 4\cdot 2 + 4\cdot 2 4e^{8J\beta}\right) \\
 	&= \frac{2e^{8J\beta} + 4}{\cosh(8J\beta) + 3}.
@@ -278,7 +278,7 @@ time, and computing the sample mean of energy and absolute magnetisation
 \begin{align}
 	\langle E\rangle &= \frac{1}{m}\sum_{i = 1}^m E_i\\
 	\langle |M|\rangle &= \frac{1}{m}\sum_{i = 1}^m |M|_i,
-\end{align} 
+\end{align}
 at each Monte Carlo cycle $m$. This cumulative mean we can use to find how much
 time, i.e. how many Monte Carlo cycles, the system needs to reach a state close
 to the most likely state where $\langle E \rangle$ and $\langle |M|\rangle$
@@ -377,9 +377,32 @@ Carlo cycles is very time consuming, we parallelized the temperature loops using
 MPI and used compiler flags. To check the speed-up we timed code using diffent
 degrees of parallisation and compiler flags.
 
-\section{Results} \label{sec:results}
-For the results we found that 
 
+\section{Results} \label{sec:results}
+To determine how many Monte Carlo cycles that were required for the solutions to
+stabilize, the model was compared to the analytical values for the energy and
+the absolute magnetization given by (\ref{eq:analyticalE}) and
+(\ref{eq:analyticalmag}) for a $2\cross 2$ lattice. This shows that the error
+became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
+\begin{deluxetable}{lcccc}
+	%\tablewidth{0pt}
+	\tablecaption{Table showing the mean value for the energy and the absolute magnetization for a $2\cross 2$ lattice. The absolute error computed by comparing the calculated values with the analytical values given by (\ref{eq:analyticalE}) and (\ref{eq:analyticalmag}) is also tabulated to illustrate the discrepancy.  \label{tab:error}}
+	%\tablecomments{}
+	\tablecolumns{5}
+	\tablehead{MC cycles  &  $\langle E\rangle$ $J$ & $\langle M \rangle$  & $E_{error}$ & $M_{error}$}
+	\startdata
+	$10$   & $-4.8$    & $2.8$    & $3.183$  & $1.194$  \\
+	$10^2$ & $-8.0$    & $4.0$    & $0.016$  & $0.005$  \\
+	$10^3$ & $-7.968$  & $3.990$  & $0.015$  & $0.004$  \\
+	$10^4$ & $-7.988$  & $3.996$  & $0.004$  & $0.001$  \\
+	$10^5$ & $-7.982$  & $3.994$  & $0.0019$ & $0.0006$ \\
+	$10^6$ & $-7.9833$ & $3.9944$ & $0.0005$ & $0.0002$
+	\enddata
+\end{deluxetable}
+The model was then used to calculate the energy $E$, absolute magnetisation
+$\vert M \vert$ and heat capacity $C_v$ all as functions of the temperatue $T$.
+The number of flips was also counted for these calculations. 
+capacity
 \begin{figure*}
 	\includegraphics{{Figures/E_MC1e7}.pdf}
 	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
@@ -402,6 +425,12 @@ For the results we found that
 	\includegraphics{{Figures/thermo_quants}.pdf}
 	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
 	\label{fig:thermo_quants}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics{{Figures/histogram}.pdf}
+	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
+	\label{fig:histogram}
 \end{figure*}
 
 \section{Discussion} \label{sec:discussion}

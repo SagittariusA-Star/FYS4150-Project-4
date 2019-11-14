@@ -14,6 +14,7 @@ T1_Dis_data = read_file_fast("P_T1_MC1e7_Disordered.npy")# np.loadtxt("P_T1_MC1e
 T1_Ord_data = read_file_fast("P_T1_MC1e7_Ordered.npy")
 T24_Dis_data = read_file_fast("P_T24_MC1e7_Disordered.npy")
 T24_Ord_data = read_file_fast("P_T24_MC1e7_Ordered.npy")
+
 E1_Dis = T1_Dis_data[:, 0]
 E1_Ord = T1_Ord_data[:, 0]
 E24_Dis = T24_Dis_data[:, 0]
@@ -39,6 +40,11 @@ M1_Dis_mean = fast_cumsum(M1_Dis, MC, 400)
 M1_Ord_mean = fast_cumsum(M1_Ord, MC, 400)
 M24_Dis_mean = fast_cumsum(M24_Dis, MC, 400)
 M24_Ord_mean = fast_cumsum(M24_Ord, MC, 400)
+
+flip24_Dis_mean = fast_cumsum(flip24_Dis, MC, 400)
+flip24_Ord_mean = fast_cumsum(flip24_Ord, MC, 400)
+flip1_Dis_mean = fast_cumsum(flip1_Dis, MC, 400)
+flip1_Ord_mean = fast_cumsum(flip1_Ord, MC, 400)
 
 #Plotting Energy
 fig, ax = plt.subplots(2, 2, sharex=True)
@@ -69,21 +75,21 @@ plt.figure()
 #Plotting number of flips
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC, flip24_Dis)
+ax[0, 0].plot(MC[: int(2e3)], flip24_Dis[: int(2e3)])
 ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel("# Flips")
 
 
-ax[1, 0].plot(MC, flip24_Ord)
+ax[1, 0].plot(MC[: int(2e3)], flip24_Ord[: int(2e3)])
 ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel("# Flips")
 
-ax[0, 1].plot(MC, flip1_Dis)
+ax[0, 1].plot(MC[: int(2e3)], flip1_Dis[: int(2e3)])
 ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel("# Flips")
 
-ax[1, 1].plot(MC, flip1_Ord)
+ax[1, 1].plot(MC[: int(2e3)], flip1_Ord[: int(2e3)])
 ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 ax[1, 1].set_ylabel("# Flips")
@@ -136,7 +142,7 @@ ax[0].set_ylabel(r"% of occurences")
 ax[1].set_ylabel(r"% of ocurrences")
 fig.tight_layout(w_pad=1)
 plt.savefig("../doc/Figures/histogram.pdf")
-
+plt.show()
 #Calculating variance
 Var24 = np.var(E24_Dis[int(5e3):]/400) #/ MC[-1]
 Var1 = np.var(E1_Dis[int(5e3):]/400)

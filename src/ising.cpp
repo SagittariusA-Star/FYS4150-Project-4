@@ -234,6 +234,7 @@ array: bool
             E[i] = _E;
             M[i] = _M;
             accp_flip[i] = accepted_flip;
+            accepted_flip = 0;
         }
     }
     results[0] /= N_samp;

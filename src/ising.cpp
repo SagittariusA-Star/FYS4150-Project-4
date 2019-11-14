@@ -2,7 +2,7 @@
 # include <armadillo>
 # include <ctime>
 # include <random>
-# include <cmath> 
+# include <cmath>
 # include <mpi.h>
 # include <stdexcept>
 using std::cout;
@@ -12,11 +12,26 @@ using std::endl;
 
 
 inline int periodic_index(int i, int N)
+/*
+Returns a periodic index.
+Parameters
+------------
+i: int
+    Index
+N: int
+    Maximum index
+*/
 {
     return (i + N) % N;
 }
 
 double E_init(arma::imat lattice)
+/*
+Initial E of lattice.
+------------
+lattice: arma__imat
+    Initial lattice matrix.
+*/
 {
     int E = 0;
     double peri_index_i;
@@ -35,17 +50,29 @@ double E_init(arma::imat lattice)
 }
 
 double M_init(arma::imat lattice)
+/*
+Initial M of lattice.
+------------
+lattice: arma__imat
+    Initial lattice matrix.
+*/
 {
     return arma::sum(arma::sum(lattice, 0));
 }
 
 arma::imat lattice (int N)
-{   
+/*
+Generate initial lattice matrix.
+------------
+N: int
+    N of NxN lattice.
+*/
+{
     arma::arma_rng::set_seed(clock());
     arma::imat lattice = arma::randi<arma::imat>(N, N, arma::distr_param(0,1));
     for (int i=0; i < N; i++) {
     for (int j=0; j < N; j++) {
-        if (lattice(i,j) == 0) 
+        if (lattice(i,j) == 0)
         {
             lattice(i,j) = -1;
         }
@@ -65,7 +92,7 @@ T: double
 {
     double Cv = 192 * (std::cosh(8.0 / T) + 1)
                     / (T * T * std::pow(std::cosh(8.0 / T) + 3, 2));
-    return Cv;      
+    return Cv;
 }
 
 double E_mean_2(double T)
@@ -85,7 +112,7 @@ T: double
 
 double M_mean_2(double T)
 /*
-Calculates the analytical expectation value for the 
+Calculates the analytical expectation value for the
 magnetization for a 2x2 lattice.
 
 Parameters
@@ -100,7 +127,7 @@ T: double
 
 double susc_2(double T)
 /*
-Calculates the analytical expectation value for the 
+Calculates the analytical expectation value for the
 magnetization for a 2x2 lattice.
 
 Parameters
@@ -109,21 +136,21 @@ T: double
     Temperature in units k_B * T / J
 */
 {
-    double expval = ((8*exp(8.0 / T) + 8) * (std::cosh(8.0 / T) + 3) 
+    double expval = ((8*exp(8.0 / T) + 8) * (std::cosh(8.0 / T) + 3)
                      - (2*exp(8.0 / T)+ 4) * (2*exp(8.0 / T)+ 4));
     expval = expval / (T * (std::cosh(8.0 / T) + 3) * (std::cosh(8.0 / T) + 3));
     return expval;
-    
+
 }
 
 void metropolis(int MC, int N, int start_samp, arma::imat &matrix,
-                double T, double *E, double *M, double *accp_flip, 
+                double T, double *E, double *M, double *accp_flip,
                 double *results, int rank, bool array = false)
 /*
 ----------
 MC: int
     Number of Monte Carlo cycles.
-N: int 
+N: int
     Dimension of lattice.
 start_samp: int
     Number of Monte Carlo cycles after which to sample.
@@ -145,7 +172,7 @@ rank: int
 array: bool
     Fill arrays is true
 */
-{   
+{
     std::mt19937_64 generator;
     std::uniform_int_distribution<int> distribution(0, N - 1);
     std::uniform_real_distribution<double> accepting(0, 1);
@@ -160,7 +187,7 @@ array: bool
     boltzmann_precal(8)  = 1.0;
     boltzmann_precal(12) = exp(-4.0 / T);
     boltzmann_precal(16) = exp(-8.0 / T);
-    double _E = E_init(matrix); 
+    double _E = E_init(matrix);
     double _M = M_init(matrix);
     if (array == true)
     {
@@ -176,7 +203,7 @@ array: bool
     results[4] = 0.0;
 
     for (int i = 0; i < MC; i++){
-        for (int j = 0; j < N * N; j++){  
+        for (int j = 0; j < N * N; j++){
             i_samp = distribution(generator);
             j_samp = distribution(generator);
             delta_E = 2 * matrix(i_samp, j_samp)
@@ -185,12 +212,12 @@ array: bool
                         + matrix(i_samp, periodic_index(j_samp + 1, N))
                         + matrix(i_samp, periodic_index(j_samp - 1, N)));
             if (boltzmann_precal((int) delta_E + 8) >= accepting(generator))
-            {   
+            {
                 matrix(i_samp, j_samp) *= - 1;
                 _E += delta_E;
                 _M += 2 * matrix(i_samp, j_samp);
                 accepted_flip += 1;
-                
+
             }
         }
         if (i >= start_samp)
@@ -205,9 +232,9 @@ array: bool
         if (array == true)
         {
             E[i] = _E;
-            M[i] = _M; 
+            M[i] = _M;
             accp_flip[i] = accepted_flip;
-        }       
+        }
     }
     results[0] /= N_samp;
     results[1] /= N_samp;
@@ -217,4 +244,3 @@ array: bool
     results[4] /= N_samp;
     results[3] -= results[4] * results[4];
 }
-

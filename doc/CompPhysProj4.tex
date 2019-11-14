@@ -369,10 +369,29 @@ MPI and used compiler flags. To check the speed-up we timed code using diffent
 degrees of parallisation and compiler flags.
 
 \section{Results} \label{sec:results}
+For the results we found that 
+
+\begin{figure*}
+	\includegraphics{{Figures/E_MC1e7}.pdf}
+	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\label{fig:E_MC7}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics{{Figures/M_MC1e7}.pdf}
+	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\label{fig:M_MC7}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics{{Figures/flip_MC1e7}.pdf}
+	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\label{fig:flip_MC7}
+\end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/thermo_quants}.pdf}
-	\caption{}
+	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
 	\label{fig:thermo_quants}
 \end{figure*}
 

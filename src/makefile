@@ -3,7 +3,7 @@ UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux) # Linux
 $(info "Linux detected")
-CPPflags= g++ -std=c++11 -O3
+CPPflags= mpic++ -std=c++11 -O3 -Wall
 endif
 ifeq ($(UNAME), Darwin) # Mac
 $(info "MacOS detected")
@@ -31,7 +31,7 @@ tests-main.o :			tests-main.cpp
 
 test-functions.o :			test-functions.cpp
 		        	${CPPflags} -c test-functions.cpp
-				
+
 ${DATA_A}:        task_a.cpp
 				${CPPflags} task_a.cpp ${LIB} -o ${DATA_A}
 

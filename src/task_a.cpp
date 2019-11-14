@@ -44,7 +44,8 @@ int main()
           true
         );
         outfile << setprecision(10) << setw(20) << MC
-                << setprecision(10) << setw(20) << results[0] << endl;
+                << setprecision(10) << setw(20) << results[0]
+                << setprecision(10) << setw(20) << results[4] << endl;
         delete[] E;
         delete[] M;
         delete[] accp_flip;

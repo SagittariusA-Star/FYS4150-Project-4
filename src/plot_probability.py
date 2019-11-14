@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numba as nb
 
+# Using numba because this was very slow.
 @nb.njit
 def fast_cumsum(arr, MC, norm_points):
-    #print(arr.shape, MC.shape)
     return np.cumsum(arr) / (MC * norm_points)
 
 def read_file_fast(filename):

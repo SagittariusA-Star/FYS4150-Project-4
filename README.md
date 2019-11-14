@@ -18,6 +18,7 @@ Computational physics Project 4
 * src/task_b.cpp, Calculates themodynamical quantities for a 2 by 2 grid with T=1
 * src/task_c_and_d.cpp, Sets temperature to 2.4, L=20, does same analysis as src/task_b.cpp. Then calculates the probability P(E)
 * src/task_e.cpp, Runs a parallellized for L=40, 60, 80, 100. Takes a lot of time to run.
+* src/timing_e.cpp, Times src/task_e.cpp for for different thread numbers.
 * src/task_f.cpp, Estimates the critical temperature.
 * src/plot_probability.py, Plots results from src/task_c_and_d.cpp
 * src/plot_thermo_quants.py, Plots results from src/task_e.cpp

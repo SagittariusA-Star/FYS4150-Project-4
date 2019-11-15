@@ -336,15 +336,15 @@ $\xi\propto N$ we get that
 	\label{eq:temp_crit}
 \end{align}
 where $a$ and $\nu$ are constants. Then the mean magnetisation becomes 
-\begin{align}
+\begin{align}\label{eq:thermoquantM}
 	\langle M(T)\rangle \sim (T - T_C)^\beta \to N^{-\beta/\nu},
 \end{align}
 the heat capacity becomes 
-\begin{align}
+\begin{align}\label{eq:thermoquantCV}
 	C_V(T) \sim |T_C - T|^{-\alpha}\to N^{\alpha / \nu}
 \end{align}
 and the susceptibility is 
-\begin{align}
+\begin{align}\label{eq:thermoquantchi}
 	\chi(T)\sim |T_C - T|^{-\gamma} \to N^{\gamma/\nu},
 \end{align}
 where we have set $T_C(N) = T$ and $T_C(N\to\infty) = T_C$.
@@ -523,12 +523,47 @@ flips per Monte Carlo cycle. By studying the histogram, as shown in Figure
 \ref{fig:histogram}, one can see that for $k_BT/J=2.4$ the variance in the
 energy is a lot higher than for $k_BT/J=1$. This is also tabulated in Table
 \ref{tab:variances}. Here we can see that for a higher temperature the particles
-in the crystal will be more suscebtible to thermal energy causing the devations
-around the most likely state to be larger than for a lower temperature.\\\indent
+in the crystal will be more suscebtible to change due to the thermal energy causing the devations
+around the most likely state to be larger than for a lower temperature. Since
+the histogram for $k_BT/J=2.4$ is relatively gaussian one can also compare the
+standard deviation, given as $\sqrt{\sigma_E^2}$, with the FWHM. Four our result
+this seems like a good match by an eye estimate. For the lower temperature, the
+shape appears too narrow with a small number of bins making it hard to conduct
+the same estimation. The variance of the sample mean $\sigma^2$ of the energy
+provides an error estimate for the mean of the energy distribution. To improve
+our method further, one could include a similar error estimate for the other
+results as well.\\\indent
 
 The implementation of the model was also timed using parallelization and
-different compiler flags. This is tabulated in Table \ref{tab:timing}. Here we
-can see that there is a s
+different compiler flags with $N=10$. This is tabulated in Table \ref{tab:timing}. Here we
+can see that there is a significant increase in efficiency between one and four
+threads using the compiler flag -O3. However, the difference between eight and four
+threads compiled with the -O3 flag is not that significant. An interesting
+result is the difference between using eight threads using the -O1 compiler flag
+compared to using one thread with the -O3 compiler flag. We found that one
+thread with the -O3 compiler flag turned out to be the fastest. This result
+indicates that compiler flags have a larger impact on CPU time than
+parallelization. Our results however were only produced computing once for every
+combination of parallelization and compiler flag. To improve this result and
+draw a safer conclusion one should test a wider range of parallelization and
+compiler flag combinations and run the calculations more than once to provide a
+better statistical analysis.\\\indent
+
+When computing the thermodynamical quanitites $\langle E(T) \rangle$,  $C_v(T)$,
+$\chi(T)$ and $\langle \vert M(T) \vert \rangle$, as shown in Figure
+\ref{fig:thermo_quants}, our results proved to be in good compliance with theory
+as described in section \ref{subsec:analysis}. By looking at the figure one can
+see that the heat capacity $C_v(T)$ peaks close to the critical temperature
+$T_C$ with a higher peak as the lattice size increases. This is in compliance
+with what one would expect from (\ref{eq:thermoquantCV}). The same is the case
+for the behavior of the magnetic susceptibility given by
+(\ref{eq:thermoquantchi}). The plot for the energy shows that it is not very sensible
+to lattice dimensions $N$. It shows a slight bend when the temperature
+approaches the $T_C$. The absolute magnetization is, in contrast to the energy,
+a lot more sensitive to the lattice dimensions when the temperature approaches
+$T_C$. It features a steeper slope than the energy and seems to converge towards
+a constant value. 
+
 
 
 

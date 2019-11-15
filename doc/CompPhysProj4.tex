@@ -543,15 +543,23 @@ can see that there is a s
 
 \section{Conclusion} \label{sec:conclusion}
 We have implemented the Ising model to simulate magnetic phase
-transitions in a lattice with periodic boundary conditions. Our simulations behave as expected, reaching their equilibriums after
-$\sim 10^3$ Monte Carlo cycles.
+transitions in a lattice with periodic boundary conditions. Our
+simulations behave as expected, reaching their equilibriums after
+$\sim 10^3$ Monte Carlo cycles and our estimated critical
+temperature of the studied phase transition  $T_\text{c}$ aligns
+well with the results of \cite{onsager:1944}.
 
-In a research we should consider more temperatures to get better
-statistics, also running over a better grid resolution on more
-powerful hardware. Purely in the interest of computational
-performance, the simulations should also be run and timed
-on different compiler flags, different compilers and more
-threads, for example on a cluster.
+For future research we should consider more than two temperatures
+to get better statistics, also running over a better grid
+resolution onmore powerful hardware. The analysis in this projects last error
+estimation of (?), which is important for robust results and should be looked
+into further. Purely in the interest of computational performance, the
+simulations should also be run and timed on different amounts of threads
+to get a better indication of how well the algorithm scales.
+
+\acknowledgements{We want to thank our fellow students Mats Ola Sand, Jon Dahl
+and Johan Andreas Fløisand for cooperation about the theory employed in this
+project.}
 
 \bibliography{ref}
 \bibliographystyle{aasjournal}

@@ -414,41 +414,44 @@ solutions described in Section \ref{subsec:two_by_two_lattice} of the computed
 quanteties were computed for
 the $k_BT/J = 1.0$ case. This is tabulated in Table \ref{tab:2by2_lattice}.
 
-To verify this the model was then used to calculate the energy $E$, absolute
+In order to find how long it would take for the model to reach equilibrium we calculate the energy $E$, absolute
 magnetisation $\vert M \vert$ and heat capacity $C_v$ all as functions of the
 temperatue $T$ for lattice with size $N=20$. The values were divided by the
-lattice area $N^2$ in order to illustrate these quantities per particle. The
+lattice area $N^2$ in order to illustrate these quantities per spin particle. The
 number of accepted flips was also counted for these calculations. These results
-are shown in figures \ref{fig:E_MC7}, \ref{fig:M_MC7} and \ref{fig:flip_MC7}
-respectively. Here we calculated for two separate temperatures $K_B T/ J = 1.0$
-and $K_B T/J=2.4$ with two initial spin configurations. One ordered
+are shown in Figures \ref{fig:E_MC7}, \ref{fig:M_MC7} and \ref{fig:flip_MC7}
+respectively. Here we calculated for two separate temperatures $k_B T/ J = 1.0$
+and $k_B T/J=2.4$ with two initial spin configurations. One ordered
 configuration where all initial spins point in the same direction and a
 disordered configuration where all initial spins are randomly chosen.
 \begin{figure*}
 	\includegraphics{{Figures/E_MC1e7}.pdf}
-	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:E_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/M_MC1e7}.pdf}
-	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:M_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/flip_MC1e7}.pdf}
-	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:flip_MC7}
 \end{figure*}
 The probability $P(E)$ was plotted for the two temperatures. This is shown in
 Figure \ref{fig:histogram}. Here we started counting after $5000$ Monte Carlo
-cycles to allow the solution to stabilize first. The variance $\sigma_E$ and variance
+cycles to allow the solution to stabilize first. The variance $\sigma_E^2$ of
+the Boltzmann distribution and total variance
 according to the central limit theorem $\sigma^2$ for this result is shown in
-table \ref{tab:variances}.\\\\\indent
+table \ref{tab:variances}.
+
+
 \begin{figure*}
 	\includegraphics{{Figures/histogram}.pdf}
-	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $K_B T /J = 1.0$ and $K_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
+	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $k_B T /J = 1.0$ and $k_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
 	\label{fig:histogram}
 \end{figure*}
 To study the behaviour of Ising model close to the critical temperature, the
@@ -486,7 +489,7 @@ tabulated in table \ref{tab:timing}.
 
 \begin{deluxetable}{lcc}
 	%\tablewidth{0pt}
-	\tablecaption{Table showing the variance in the energy $\sigma_E^2$ and the variance according to the central limit theorem $\sigma^2$ for to temperatures. The grid size used was $N = 20$ and $10^6$ Monte Carlo cycles with a sample start at 5000 cycles.\label{tab:variances}}
+	\tablecaption{Table showing the variance in the energy $\sigma_E^2$ and the total variance according to the central limit theorem $\sigma^2$ for to temperatures. The grid size used was $N = 20$ and $10^6$ Monte Carlo cycles with a sample start at 5000 cycles.\label{tab:variances}}
 	%\tablecomments{}
 	\tablecolumns{3}
 	\tablehead{$k_BT / J$ & $\sigma_E^2$ $[J^2]$ & $\sigma^2$ $[J^2]$}

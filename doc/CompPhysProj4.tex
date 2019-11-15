@@ -13,7 +13,7 @@
 
 \begin{document}
 
-\title{\Large Foreløpig ingen tittel.}
+\title{\Large Modelling the Time Development of a 2D Ising Model by Means of a MCMC Algorithm}
 
 \author{Håkon Tansem}
 
@@ -22,6 +22,9 @@
 \author{Bernhard Nornes Lotsberg}
 
 \begin{abstract}
+	
+
+	The source codes for this paper can be found at \url{https://github.com/hakontan/FYS4150-Project-4}
 
 \end{abstract}
 
@@ -391,7 +394,7 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	\enddata
 \end{deluxetable}
 
-\begin{deluxetable}{lcccc}
+\begin{deluxetable*}{lcccc}
 	%\tablewidth{0pt}
 	\tablecaption{ Table showing the mean energy and mean absolute magnetization as well as the heat capacity and susceptibility for different temperatures. The values where computed with a number of Monte Carlo cycles of $10^6$. \label{tab:2by2_lattice}}
 	%\tablecomments{}
@@ -405,7 +408,8 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	$2.12$ & $-7.0192$  & $3.6734$  & $1.5442$ & $0.4131$ \\
 	Rel. Error at $\frac{k_BT}{J} = 1.0$ & $4.967 \cdot 10^{-6}$  & $2.780\cdot 10^{-5}$  & $0.003$ & $0.0391$
 	\enddata
-\end{deluxetable}
+\end{deluxetable*}
+
 Using the higherst precision found in Table \ref{tab:error} obtaines with $10^6$
 Monte Carlo cycles, we computed the mean energy and absolute value of the
 magnetisation as well as the heat capacity and susceptibility for different
@@ -446,7 +450,7 @@ Figure \ref{fig:histogram}. Here we started counting after $5000$ Monte Carlo
 cycles to allow the solution to stabilize first. The variance $\sigma_E^2$ of
 the Boltzmann distribution and total variance
 according to the central limit theorem $\sigma^2$ for this result is shown in
-table \ref{tab:variances}.
+Table \ref{tab:variances}.
 
 
 \begin{figure*}
@@ -469,7 +473,7 @@ parallisation and compiler flags for a lattice with dimensions $N=10$. This is
 tabulated in Table \ref{tab:timing}.
 \begin{figure*}
 	\includegraphics{{Figures/thermo_quants}.pdf}
-	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
+	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after $5000$  Monte Carlo cycles when the system has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The plot was produced using 50 temperature poins in the range $k_BT/J \in [2.0, 2.5]$.}
 	\label{fig:thermo_quants}
 \end{figure*}
 
@@ -495,7 +499,7 @@ tabulated in Table \ref{tab:timing}.
 	\tablehead{$k_BT / J$ & $\sigma_E^2$ $[J^2]$ & $\sigma^2$ $[J^2]$}
 	\startdata
 	1.0 & $5.848\cdot 10^{-5}$ & $5.848\cdot 10^{-12}$ \\
-	1.4 & $0.0203$ & $2.03\cdot 10^{-9}$
+	2.4 & $0.0203$ & $2.03\cdot 10^{-9}$	
 	\enddata
 \end{deluxetable}
 Finally we used the peaks of the heat capacity $C_v$ of the $N = 80$ and $N =
@@ -579,16 +583,25 @@ amount of spins in both direction cancelling each other.
 
 \section{Conclusion} \label{sec:conclusion}
 We have implemented the Ising model to simulate magnetic phase
-transitions in a lattice with periodic boundary conditions. Our simulations behave as expected, reaching their equilibriums after
-$\sim 10^3$ Monte Carlo cycles.
+transitions in a lattice with periodic boundary conditions. Our
+simulations behave as expected, reaching their equilibriums after
+$\sim 10^3$ Monte Carlo cycles and our estimated critical
+temperature of the studied phase transition  $T_\text{c}$ aligns
+well with the results of \cite{onsager:1944}.
 
-In a research we should consider more temperatures to get better
-statistics, also running over a better grid resolution on more
-powerful hardware. Purely in the interest of computational
-performance, the simulations should also be run and timed
-on different compiler flags, different compilers and more
-threads, for example on a cluster.
+For future research we should consider more than two temperatures
+to get better statistics, also running over a better grid
+resolution onmore powerful hardware. The analysis in this projects last error
+estimation of (?), which is important for robust results and should be looked
+into further. Purely in the interest of computational performance, the
+simulations should also be run and timed on different amounts of threads
+to get a better indication of how well the algorithm scales.
 
+\acknowledgements{We want to thank our fellow students Mats Ola Sand, Jon Dahl
+and Johan Andreas Fløisand for cooperation about the theory employed in this
+project.}
+
+\newpage
 \bibliography{ref}
 \bibliographystyle{aasjournal}
 \end{document}

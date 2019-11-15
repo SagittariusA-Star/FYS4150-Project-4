@@ -1,6 +1,8 @@
 # FYS4150-Project-4
 Computational physics Project 4
 
+Studies of phase transitions in magnetic systems
+
 ## Dependencies
 * MPI
 * Python >= 3.6

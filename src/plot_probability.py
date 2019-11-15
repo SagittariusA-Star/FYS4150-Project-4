@@ -51,23 +51,23 @@ fig, ax = plt.subplots(2, 2, sharex=True)
 
 ax[0, 0].plot(MC[: int(1e4)], E24_Dis_mean[: int(1e4)])
 ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
-ax[0, 0].set_ylabel(r"$Energy [J]$")
+ax[0, 0].set_ylabel(r"$\langle E \rangle$ $[J]$")
 
 ax[1, 0].plot(MC[: int(1e4)], E24_Ord_mean[: int(1e4)])
 ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
-ax[1, 0].set_ylabel(r"$Energy [J]$")
+ax[1, 0].set_ylabel(r"$\langle E \rangle$ $[J]$")
 
 ax[0, 1].plot(MC[: int(1e4)], E1_Dis_mean[: int(1e4)])
 ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
-ax[0, 1].set_ylabel(r"$Energy [J]$")
+ax[0, 1].set_ylabel(r"$\langle E \rangle$ $[J]$")
 
 ax[1, 1].plot(MC[: int(1e4)], E1_Ord_mean[: int(1e4)])
 ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
-ax[1, 1].set_ylabel(r"$Energy [J]$")
+ax[1, 1].set_ylabel(r"$\langle E \rangle$ $[J]$")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 
-fig.tight_layout(w_pad=1)
+fig.tight_layout(w_pad=0.1)
 fig.set_size_inches(7.1014, 9.0971 / 2)
 plt.savefig("../doc/Figures/E_MC1e7.pdf")
 plt.figure()
@@ -75,21 +75,21 @@ plt.figure()
 #Plotting number of flips
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC[: int(2e3)], flip24_Dis[: int(2e3)])
+ax[0, 0].plot(MC[: int(1e4)], flip24_Dis[: int(1e4)])
 ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel("# Flips")
 
 
-ax[1, 0].plot(MC[: int(2e3)], flip24_Ord[: int(2e3)])
+ax[1, 0].plot(MC[: int(1e4)], flip24_Ord[: int(1e4)])
 ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel("# Flips")
 
-ax[0, 1].plot(MC[: int(2e3)], flip1_Dis[: int(2e3)])
+ax[0, 1].plot(MC[: int(1e4)], flip1_Dis[: int(1e4)])
 ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel("# Flips")
 
-ax[1, 1].plot(MC[: int(2e3)], flip1_Ord[: int(2e3)])
+ax[1, 1].plot(MC[: int(1e4)], flip1_Ord[: int(1e4)])
 ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 ax[1, 1].set_ylabel("# Flips")
@@ -103,23 +103,23 @@ fig, ax = plt.subplots(2, 2, sharex=True)
 
 ax[0, 0].plot(MC[: int(1e4)], M24_Dis_mean[: int(1e4)])
 ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
-ax[0, 0].set_ylabel(r"$\vert M \vert$")
+ax[0, 0].set_ylabel(r"$\langle \vert M \vert\rangle$")
 
 
 ax[1, 0].plot(MC[: int(1e4)], M24_Ord_mean[: int(1e4)])
 ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
-ax[1, 0].set_ylabel(r"$\vert M \vert$")
+ax[1, 0].set_ylabel(r"$\langle \vert M \vert\rangle$")
 
 ax[0, 1].plot(MC[: int(1e4)], M1_Dis_mean[: int(1e4)])
 ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
-ax[0, 1].set_ylabel(r"$\vert M \vert$")
+ax[0, 1].set_ylabel(r"$\langle \vert M \vert\rangle$")
 
 ax[1, 1].plot(MC[: int(1e4)], M1_Ord_mean[: int(1e4)])
 ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
-ax[1, 1].set_ylabel(r"$\vert M \vert$")
-fig.tight_layout(w_pad=1)
+ax[1, 1].set_ylabel(r"$\langle \vert M \vert\rangle$")
+fig.tight_layout(w_pad = 0.1)
 fig.set_size_inches(7.1014, 9.0971 / 2)
 plt.savefig("../doc/Figures/M_MC1e7.pdf")
 plt.figure()
@@ -142,7 +142,7 @@ ax[0].set_ylabel(r"% of occurences")
 ax[1].set_ylabel(r"% of ocurrences")
 fig.tight_layout(w_pad=1)
 plt.savefig("../doc/Figures/histogram.pdf")
-plt.show()
+
 #Calculating variance
 Var24 = np.var(E24_Dis[int(5e3):]/400) #/ MC[-1]
 Var1 = np.var(E1_Dis[int(5e3):]/400)

@@ -75,21 +75,21 @@ plt.figure()
 #Plotting number of flips
 fig, ax = plt.subplots(2, 2, sharex=True)
 
-ax[0, 0].plot(MC[: int(2e3)], flip24_Dis[: int(2e3)])
+ax[0, 0].plot(MC[: int(1e4)], flip24_Dis[: int(1e4)])
 ax[0, 0].set_title(r"$K_BT/J = 2.4$, Disordered")
 ax[0, 0].set_ylabel("# Flips")
 
 
-ax[1, 0].plot(MC[: int(2e3)], flip24_Ord[: int(2e3)])
+ax[1, 0].plot(MC[: int(1e4)], flip24_Ord[: int(1e4)])
 ax[1, 0].set_title(r"$K_BT/J = 2.4$, Ordered")
 ax[1, 0].set_xlabel("# Monte Carlo cycles")
 ax[1, 0].set_ylabel("# Flips")
 
-ax[0, 1].plot(MC[: int(2e3)], flip1_Dis[: int(2e3)])
+ax[0, 1].plot(MC[: int(1e4)], flip1_Dis[: int(1e4)])
 ax[0, 1].set_title(r"$K_BT/J = 1$, Disordered")
 ax[0, 1].set_ylabel("# Flips")
 
-ax[1, 1].plot(MC[: int(2e3)], flip1_Ord[: int(2e3)])
+ax[1, 1].plot(MC[: int(1e4)], flip1_Ord[: int(1e4)])
 ax[1, 1].set_title(r"$K_BT/J = 1$, Ordered")
 ax[1, 1].set_xlabel("# Monte Carlo cycles")
 ax[1, 1].set_ylabel("# Flips")

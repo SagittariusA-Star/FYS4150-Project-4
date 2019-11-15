@@ -97,6 +97,14 @@ int main(int argc, char *argv[])
                   << setprecision(10) << setw(20) << C_result[i]
                   << setprecision(10) << setw(20) << Chi_result[i] << endl;
       }
+
+      outfile << setprecision(10) << setw(20) << T_array[0] 
+                  << setprecision(10) << setw(20) << std::fabs((E_result[0] - E_mean_2(T_array[0])) / E_mean_2(T_array[0]))
+                  << setprecision(10) << setw(20) << std::fabs(M_result[0] - M_mean_2(T_array[0])) / M_mean_2(T_array[0])
+                  << setprecision(10) << setw(20) << std::fabs(C_result[0] - Cv_2(T_array[0])) / Cv_2(T_array[0])
+                  << setprecision(10) << setw(20) << std::fabs(Chi_result[0] - susc_2(T_array[0])) / susc_2(T_array[0])  
+                  << endl;
+
       outfile.close();
       delete[] C_result;
       delete[] Chi_result;

@@ -93,7 +93,7 @@ temperature change. The heat capacity at constant volume is given as
 \end{align}
 thus being analogous to the variance in energy states.
 Finally, the magnetic susceptibility measuring how the systems magnetisation
-responds to an external magnetic field, is defined as
+responds to a temperature change, is defined as
 \begin{align}
 	\chi &= \beta\left(\sum_{i}\frac{M_i^2}{Z}e^{-\beta E_i} - \langle |M_i|\rangle^2 \right)\\
 	& = \frac{1}{k_BT}\left(\langle M^2\rangle - \langle |M|\rangle^2\right) = \frac{\sigma^2_{|M|}}{k_BT}.
@@ -102,10 +102,10 @@ These thermodynamical quantities will later be usefull when estimating the
 critical temperature of the phase transition when the system looses its net
 magnetisation.
 When later implementing these thermodynamical quantities numerically we will
-use natural units where $k_B = 1$ and the energy is in units $J/k_B$, the
-temperature will have dimensions energy $k_BT/J$. Also the magnetisation is in
+use natural units where $k_B = 1$ and the energy is in units $J$, the
+temperature will be unitless $k_BT / J$. Also the magnetisation is in
 this case a unitless quantity, and due to the energy and temperature scaling the
-heat capacity and (HUSK ENHETER)
+heat capacity and susceptibility have units $k_B$ and $J^2$ respectively.
 
 \subsection{Analytical Solutions to the $2\times2$ Lattice}\label{subsec:two_by_two_lattice}
 Before discribing the algorithm modeling the time development of the lattice, we
@@ -257,7 +257,7 @@ updated. After many cycles the system will than converge to the most like state
 $\langle E\rangle$, and oscillate around it.
 
 
-\subsection{The Analysis}
+\subsection{The Analysis}\label{subsec:analysis}
 Now that we have an algorithm computing the discribed thermodynamic quantites,
 we can compare the output to the known analytical values for a $2\times 2$ grid
 for say a temperature $k_BT/J = 1.0$.
@@ -371,7 +371,7 @@ degrees of parallisation and compiler flags.
 
 \section{Results} \label{sec:results}
 To determine how many Monte Carlo cycles that were required for the solutions to
-stabilize, the model was compared to the analytical values for the energy and
+stabilize using a $2\times 2$ lattice, the model was compared to the analytical values for the energy and
 the absolute magnetization given by (\ref{eq:analyticalE}) and
 (\ref{eq:analyticalM}) respectively for a $2\cross 2$ lattice. This shows that the error
 became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
@@ -380,7 +380,7 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	\tablecaption{Table showing the mean value for the energy and the absolute magnetization for a $2\cross 2$ lattice. The absolute error computed by comparing the calculated values with the analytical values given by (\ref{eq:analyticalE}) and (\ref{eq:analyticalM}) is also tabulated to illustrate the discrepancy.  \label{tab:error}}
 	%\tablecomments{}
 	\tablecolumns{5}
-	\tablehead{MC cycles  &  $\langle E\rangle$ $J$ & $\langle M \rangle$  & $E_{error}$ & $M_{error}$}
+	\tablehead{MC cycles  &  $\langle E\rangle$ $[J]$ & $\langle M \rangle$  & $E_{error}$ & $M_{error}$}
 	\startdata
 	$10$   & $-4.8$    & $2.8$    & $3.183$  & $1.194$  \\
 	$10^2$ & $-8.0$    & $4.0$    & $0.016$  & $0.005$  \\
@@ -390,41 +390,68 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	$10^6$ & $-7.9833$ & $3.9944$ & $0.0005$ & $0.0002$
 	\enddata
 \end{deluxetable}
-To verify this the model was then used to calculate the energy $E$, absolute
+
+\begin{deluxetable}{lcccc}
+	%\tablewidth{0pt}
+	\tablecaption{ Table showing the mean energy and mean absolute magnetization as well as the heat capacity and susceptibility for different temperatures. The values where computed with a number of Monte Carlo cycles of $10^6$. \label{tab:2by2_lattice}}
+	%\tablecomments{}
+	\tablecolumns{5}
+	\tablehead{$k_BT / J$  &  $\langle E\rangle$ $[J]$ & $\langle M \rangle$  & $C_V$ $[k_B]$  & $\chi_{|M|}$ $[J^{-1}]$}
+	\startdata
+	$1$   & $-7.9841$    & $ 3.9947$    & $0.1263$  & $0.0158$  \\
+	$1.28$ & $-7.9086$    & $3.9697$    & $0.4415$  & $0.0698$  \\
+	$1.56$ & $-7.7279$  & $3.9096$  & $0.8654$  & $0.1683$  \\
+	$1.84$ & $-7.4251$  & $3.8092$  & $1.2673$  & $0.2907$  \\
+	$2.12$ & $-7.0192$  & $3.6734$  & $1.5442$ & $0.4131$ \\
+	Rel. Error at $\frac{k_BT}{J} = 1.0$ & $4.967 \cdot 10^{-6}$  & $2.780\cdot 10^{-5}$  & $0.003$ & $0.0391$
+	\enddata
+\end{deluxetable}
+Using the higherst precision found in Table \ref{tab:error} obtaines with $10^6$
+Monte Carlo cycles, we computed the mean energy and absolute value of the
+magnetisation as well as the heat capacity and susceptibility for different
+temperatures $k_BT/J\in[1.0, 2.12]$. The relative errors to the analytical
+solutions described in Section \ref{subsec:two_by_two_lattice} of the computed
+quanteties were computed for
+the $k_BT/J = 1.0$ case. This is tabulated in Table \ref{tab:2by2_lattice}.
+
+In order to find how long it would take for the model to reach equilibrium we calculate the energy $E$, absolute
 magnetisation $\vert M \vert$ and heat capacity $C_v$ all as functions of the
 temperatue $T$ for lattice with size $N=20$. The values were divided by the
-lattice area $N^2$ in order to illustrate these quantities per particle. The
+lattice area $N^2$ in order to illustrate these quantities per spin particle. The
 number of accepted flips was also counted for these calculations. These results
-are shown in figures \ref{fig:E_MC7}, \ref{fig:M_MC7} and \ref{fig:flip_MC7}
-respectively. Here we calculated for two separate temperatures $K_B T/ J = 1.0$
-and $K_B T/J=2.4$ with two initial spin configurations. One ordered
+are shown in Figures \ref{fig:E_MC7}, \ref{fig:M_MC7} and \ref{fig:flip_MC7}
+respectively. Here we calculated for two separate temperatures $k_B T/ J = 1.0$
+and $k_B T/J=2.4$ with two initial spin configurations. One ordered
 configuration where all initial spins point in the same direction and a
 disordered configuration where all initial spins are randomly chosen.
 \begin{figure*}
 	\includegraphics{{Figures/E_MC1e7}.pdf}
-	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:E_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/M_MC1e7}.pdf}
-	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:M_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/flip_MC1e7}.pdf}
-	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:flip_MC7}
 \end{figure*}
 The probability $P(E)$ was plotted for the two temperatures. This is shown in
 Figure \ref{fig:histogram}. Here we started counting after $5000$ Monte Carlo
-cycles to allow the solution to stabilize first. The variance $\sigma_E$ and variance
+cycles to allow the solution to stabilize first. The variance $\sigma_E^2$ of
+the Boltzmann distribution and total variance
 according to the central limit theorem $\sigma^2$ for this result is shown in
-table \ref{tab:variances}.\\\\\indent
+table \ref{tab:variances}.
+
+
 \begin{figure*}
 	\includegraphics{{Figures/histogram}.pdf}
-	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $K_B T /J = 1.0$ and $K_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
+	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $k_B T /J = 1.0$ and $k_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
 	\label{fig:histogram}
 \end{figure*}
 To study the behaviour of Ising model close to the critical temperature, the
@@ -439,13 +466,12 @@ different lattice dimensions $N=40$, $N=60$, $N=80$ and $N=100$ to study how
 this affects the solution. \\
 The same calculation was also timed using a varying amount of threads for
 parallisation and compiler flags for a lattice with dimensions $N=10$. This is
-tabulated in table \ref{tab:timing}.
+tabulated in Table \ref{tab:timing}.
 \begin{figure*}
 	\includegraphics{{Figures/thermo_quants}.pdf}
 	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
 	\label{fig:thermo_quants}
 \end{figure*}
-
 
 \begin{deluxetable}{ccc}
 	%\tablewidth{0pt}
@@ -463,18 +489,57 @@ tabulated in table \ref{tab:timing}.
 
 \begin{deluxetable}{lcc}
 	%\tablewidth{0pt}
-	\tablecaption{Table showing the variance in the energy $\sigma_E^2$ and the variance according to the central limit theorem $\sigma^2$ for to temperatures. The grid size used was $N = 20$ and $10^6$ Monte Carlo cycles with a sample start at 5000 cycles.\label{tab:variances}}
+	\tablecaption{Table showing the variance in the energy $\sigma_E^2$ and the total variance according to the central limit theorem $\sigma^2$ for to temperatures. The grid size used was $N = 20$ and $10^6$ Monte Carlo cycles with a sample start at 5000 cycles.\label{tab:variances}}
 	%\tablecomments{}
 	\tablecolumns{3}
-	\tablehead{$k_BT / J$ & $\sigma_E^2$ [UNITS] & $\sigma^2$ [UNIT]}
+	\tablehead{$k_BT / J$ & $\sigma_E^2$ $[J^2]$ & $\sigma^2$ $[J^2]$}
 	\startdata
 	1.0 & $5.848\cdot 10^{-5}$ & $5.848\cdot 10^{-12}$ \\
 	1.4 & $0.0203$ & $2.03\cdot 10^{-9}$
 	\enddata
 \end{deluxetable}
-
+Finally we used the peaks of the heat capacity $C_v$ of the $N = 80$ and $N =
+100$ lattices seen in Figure \ref{fig:thermo_quants}, to estimate the critical
+temperature $T_C(N\to\infty)$ of an infinite grid according to the method
+described in section \ref{subsec:analysis}. We found that the critical
+temperature $k_BT_C / J \approx 2.284$ with a relative error to the
+analytical value (by \cite{onsager:1944}) of $\epsilon \approx 0.675\%$.
 
 \section{Discussion} \label{sec:discussion}
+When studying the mean energy and absolute mangetization for the ordered and
+disordered configurations for $N=20$, our results show significant differences
+for the four combinations of temperature and initial spin configuration. When
+studying the mean energy, illustrated in Figure \ref{fig:E_MC7}, one can see
+that the ordered configuration for $k_BT/J=1$ starts very close to its most
+likely state. The disordered configuration with $k_BT/J=1$ has an initial value
+that is more off than the ordered configuration, but it quickly reaches an
+equilibrium. The same behaviour can be seen for the same combinations for
+temperature and initial configuration for the absolute mangetization as seen in
+Figure \ref{fig:M_MC7}. The fluctuations around the most likely state is also
+relatively small for this temperature. For the temperature $k_BT/J=2.4$, one can
+see that for both initial spin configurations the discrepancy between
+the most likely state and the initial state is relatively large for both the
+mean energy and absolute magnetization. The solution stabilizes around the most
+likely state relatively fast, allthough not as fast as for the lower temperature
+previously discussed. One can also see that for the higher temperature, the
+fluctuations around the most likely state is a lot higher than for $k_BT/J =1$.
+This can also be seen by studying the number of accepted flips per Monte Carlo
+cycle as shown in Figure \ref{fig:flip_MC7}. After the quantities have
+stabilized one can see that the number of flips for the higher temperature is a
+lot higher than for $k_BT/J=1$. While the lower temperature ranges zero to four
+flips, the solution with $k_BT/J=2.4$ ranges from approximately $50$ to $100$
+flips per Monte Carlo cycle. By studying the histogram, as shown in Figure
+\ref{fig:histogram}, one can see that for $k_BT/J=2.4$ the variance in the
+energy is a lot higher than for $k_BT/J=1$. This is also tabulated in Table
+\ref{tab:variances}. Here we can see that for a higher temperature the particles
+in the crystal will be more suscebtible to thermal energy causing the devations
+around the most likely state to be larger than for a lower temperature.\\\indent
+
+The implementation of the model was also timed using parallelization and
+different compiler flags. This is tabulated in Table \ref{tab:timing}. Here we
+can see that there is a s
+
+
 
 \section{Conclusion} \label{sec:conclusion}
 We have implemented the Ising model to simulate magnetic phase

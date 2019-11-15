@@ -390,8 +390,8 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	$10^6$ & $-7.9833$ & $3.9944$ & $0.0005$ & $0.0002$
 	\enddata
 \end{deluxetable}
-To verify this the model was then used to calculate the energy $E$, absolute
-magnetisation $\vert M \vert$ and heat capacity $C_v$ all as functions of the
+To verify this the model was then used to calculate the energy $E$ and absolute
+magnetisation $\vert M \vert$ both as functions of the
 temperatue $T$ for lattice with size $N=20$. The values were divided by the
 lattice area $N^2$ in order to illustrate these quantities per particle. The
 number of accepted flips was also counted for these calculations. These results
@@ -475,6 +475,39 @@ tabulated in table \ref{tab:timing}.
 
 
 \section{Discussion} \label{sec:discussion}
+When studying the mean energy and absolute mangetization for the ordered and
+disordered configurations for $N=20$, our results show significant differences
+for the four combinations of temperature and initial spin configuration. When
+studying the mean energy, illustrated in Figure \ref{fig:E_MC7}, one can see
+that the ordered configuration for $K_BT/J=1$ starts very close to its most
+likely state. The disordered configuration with $K_BT/J=1$ has an initial value
+that is more off than the ordered configuration, but it quickly reaches an
+equilibrium. The same behaviour can be seen for the same combinations for
+temperature and initial configuration for the absolute mangetization as seen in
+Figure \ref{fig:M_MC7}. The fluctuations around the most likely state is also
+relatively small for this temperature. For the temperature $K_BT/J=2.4$, one can
+see that for both initial spin configurations the discrepancy between
+the most likely state and the initial state is relatively large for both the
+mean energy and absolute magnetization. The solution stabilizes around the most
+likely state relatively fast, allthough not as fast as for the lower temperature
+previously discussed. One can also see that for the higher temperature, the
+fluctuations around the most likely state is a lot higher than for $K_BT/J =1$.
+This can also be seen by studying the number of accepted flips per Monte Carlo
+cycle as shown in Figure \ref{fig:flip_MC7}. After the quantities have
+stabilized one can see that the number of flips for the higher temperature is a
+lot higher than for $K_BT/J=1$. While the lower temperature ranges zero to four
+flips, the solution with $K_BT/J=2.4$ ranges from approximately $50$ to $100$
+flips per Monte Carlo cycle. By studying the histogram, as shown in
+\ref{fig:histogram}, one can see that for $K_BT/J=2.4$ the variance in the
+energy is a lot higher than for $K_BT/J=1$. This is also tabulated in table
+\ref{tab:variances}. Here we can see that for a higher temperature the particles
+in the crystal will be more suscebtible to thermal energy causing the devations
+around the most likely state to be larger than for a lower temperature.\\\indent
+
+The implementation of the model was also timed using parallelization and
+different compiler flags. This is tabulated in Table \ref
+
+
 
 \section{Conclusion} \label{sec:conclusion}
 

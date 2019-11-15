@@ -413,25 +413,25 @@ temperatue $T$ for lattice with size $N=20$. The values were divided by the
 lattice area $N^2$ in order to illustrate these quantities per particle. The
 number of accepted flips was also counted for these calculations. These results
 are shown in figures \ref{fig:E_MC7}, \ref{fig:M_MC7} and \ref{fig:flip_MC7}
-respectively. Here we calculated for two separate temperatures $K_B T/ J = 1.0$
-and $K_B T/J=2.4$ with two initial spin configurations. One ordered
+respectively. Here we calculated for two separate temperatures $k_B T/ J = 1.0$
+and $k_B T/J=2.4$ with two initial spin configurations. One ordered
 configuration where all initial spins point in the same direction and a
 disordered configuration where all initial spins are randomly chosen.
 \begin{figure*}
 	\includegraphics{{Figures/E_MC1e7}.pdf}
-	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the energy $E$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:E_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/M_MC1e7}.pdf}
-	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the absolute value of the magnetization $\vert M\vert$ as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatu res $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:M_MC7}
 \end{figure*}
 
 \begin{figure*}
 	\includegraphics{{Figures/flip_MC1e7}.pdf}
-	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $K_B T /J=1$ and $K_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
+	\caption{Figure showing the number of flips done to the spin values as a function of Monte Carlo cycles for a lattice with dimensions $N=20$. The simulations were done with two different temperatures $k_B T /J=1$ and $k_B T/J=2.4$ for and ordered lattice where all initial spins point in the same direction and an unordered lattice where all initial spins are chosen randomly.}
 	\label{fig:flip_MC7}
 \end{figure*}
 The probability $P(E)$ was plotted for the two temperatures. This is shown in
@@ -441,7 +441,7 @@ according to the central limit theorem $\sigma^2$ for this result is shown in
 table \ref{tab:variances}.\\\\\indent
 \begin{figure*}
 	\includegraphics{{Figures/histogram}.pdf}
-	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $K_B T /J = 1.0$ and $K_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
+	\caption{Figure showing the probability $P(E)$ for a system with lattice size $N=20$ for two different temperatures $k_B T /J = 1.0$ and $k_B T/J = 2.4$. The energies were counted continously after $5000$ Monte Carlo cycles to allow the solution to stabilize.}
 	\label{fig:histogram}
 \end{figure*}
 To study the behaviour of Ising model close to the critical temperature, the
@@ -456,7 +456,7 @@ different lattice dimensions $N=40$, $N=60$, $N=80$ and $N=100$ to study how
 this affects the solution. \\
 The same calculation was also timed using a varying amount of threads for
 parallisation and compiler flags for a lattice with dimensions $N=10$. This is
-tabulated in table \ref{tab:timing}.
+tabulated in Table \ref{tab:timing}.
 \begin{figure*}
 	\includegraphics{{Figures/thermo_quants}.pdf}
 	\caption{Figure showing thermodynamical quantitites per particle as a function of temperature for varying lattice dimensions $N$ after the solution has stabilized. Starting clockwise from the upper left the figure illustrates the mean energy $\langle E(T) \rangle$, heat capacity $C_v(T)$, magnetic susceptibility $\chi(T)$ and the mean of the absolute value of the magnetization $\langle \vert M(T) \vert \rangle$. The calculations were done with a temperature step $\Delta T = 0.01$.}
@@ -501,33 +501,34 @@ When studying the mean energy and absolute mangetization for the ordered and
 disordered configurations for $N=20$, our results show significant differences
 for the four combinations of temperature and initial spin configuration. When
 studying the mean energy, illustrated in Figure \ref{fig:E_MC7}, one can see
-that the ordered configuration for $K_BT/J=1$ starts very close to its most
-likely state. The disordered configuration with $K_BT/J=1$ has an initial value
+that the ordered configuration for $k_BT/J=1$ starts very close to its most
+likely state. The disordered configuration with $k_BT/J=1$ has an initial value
 that is more off than the ordered configuration, but it quickly reaches an
 equilibrium. The same behaviour can be seen for the same combinations for
 temperature and initial configuration for the absolute mangetization as seen in
 Figure \ref{fig:M_MC7}. The fluctuations around the most likely state is also
-relatively small for this temperature. For the temperature $K_BT/J=2.4$, one can
+relatively small for this temperature. For the temperature $k_BT/J=2.4$, one can
 see that for both initial spin configurations the discrepancy between
 the most likely state and the initial state is relatively large for both the
 mean energy and absolute magnetization. The solution stabilizes around the most
 likely state relatively fast, allthough not as fast as for the lower temperature
 previously discussed. One can also see that for the higher temperature, the
-fluctuations around the most likely state is a lot higher than for $K_BT/J =1$.
+fluctuations around the most likely state is a lot higher than for $k_BT/J =1$.
 This can also be seen by studying the number of accepted flips per Monte Carlo
 cycle as shown in Figure \ref{fig:flip_MC7}. After the quantities have
 stabilized one can see that the number of flips for the higher temperature is a
-lot higher than for $K_BT/J=1$. While the lower temperature ranges zero to four
-flips, the solution with $K_BT/J=2.4$ ranges from approximately $50$ to $100$
-flips per Monte Carlo cycle. By studying the histogram, as shown in
-\ref{fig:histogram}, one can see that for $K_BT/J=2.4$ the variance in the
-energy is a lot higher than for $K_BT/J=1$. This is also tabulated in table
+lot higher than for $k_BT/J=1$. While the lower temperature ranges zero to four
+flips, the solution with $k_BT/J=2.4$ ranges from approximately $50$ to $100$
+flips per Monte Carlo cycle. By studying the histogram, as shown in Figure
+\ref{fig:histogram}, one can see that for $k_BT/J=2.4$ the variance in the
+energy is a lot higher than for $k_BT/J=1$. This is also tabulated in Table
 \ref{tab:variances}. Here we can see that for a higher temperature the particles
 in the crystal will be more suscebtible to thermal energy causing the devations
 around the most likely state to be larger than for a lower temperature.\\\indent
 
 The implementation of the model was also timed using parallelization and
-different compiler flags. This is tabulated in Table \ref
+different compiler flags. This is tabulated in Table \ref{tab:timing}. Here we
+can see that there is a s
 
 
 

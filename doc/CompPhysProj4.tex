@@ -41,7 +41,7 @@ different grid sizes and temperatures make the lattice behave, and how the syste
 developes in time, the final aim being to estimate the critical temperature of
 the phase transition when the lattice looses its magnetisation, as presented in
 Ch. 5. and 6. in \cite{plischke:2006}. This is then
-compared to the analytical value found by \cite{onsager:1944}. 
+compared to the analytical value found by \cite{onsager:1944}.
 
 This paper will present needed theory and implementation of the theory in the Method
 section \ref{sec:method}, the results will be presented in the Results section
@@ -63,44 +63,44 @@ where $\langle kl\rangle$ denotes the sum over the nearest neighbours and $J$ ha
 energies we choose to use periodic boundaries, meaning that the nearest
 neighbour of a spin $s_{i,N-1}$ at the edge of the lattice is the spin $s_{i,0}$
 at the opposite edge of the lattice. This is done so as to simulate a lattice
-that extends infinitly in space. 
-The magnetisation is defined similarly as 
+that extends infinitly in space.
+The magnetisation is defined similarly as
 \begin{align}
-	M = \sum_i s_i,	
+	M = \sum_i s_i,
 	\label{eq:magnetisation}
-\end{align} 
+\end{align}
 simply being the sum of the systems spins. The probability density function (PDF) of the system having
-a cetain energy state is given by the Boltzmann distribution 
+a cetain energy state is given by the Boltzmann distribution
 \begin{align}
 	P(E_i) = \frac{1}{Z}e^{-\beta E_i},
 \end{align}
 where $\beta = \frac{1}{k_B T}$ for the Boltzmann constant $k_B$ and the
 temperature $T$. The partition function of the system describing all statistical
-properties of the system in equilibrium is given as 
+properties of the system in equilibrium is given as
 \begin{align}
 	Z = \sum_{i} e^{-\beta E_i},
 \end{align}
 over all possible microstates ($2^{N^2}$ in total for a $2\times 2$ grid) of the system. The mean energy and absolute magnetisation
-of the system is then given as 
+of the system is then given as
 \begin{align}
 	\langle E \rangle &= \sum_{i} E_i P(E_i) = \sum_{i} \frac{E_i}{Z}e^{-\beta E_i} = \pdv{\ln Z}{\beta}\\
-	\langle |M| \rangle &= \sum_{i} |M_i| P(E_i) = \sum_{i} \frac{|M_i|}{Z}e^{-\beta E_i} 
+	\langle |M| \rangle &= \sum_{i} |M_i| P(E_i) = \sum_{i} \frac{|M_i|}{Z}e^{-\beta E_i}
 \end{align}
 and represent the most likely state of the system.
 Another important quantity from
 thermodynamics is the heat capacity measuring the change heat for a given
-temperature change. The heat capacity at constant volume is given as 
+temperature change. The heat capacity at constant volume is given as
 \begin{align}
 	C_V &= \dv{\langle E \rangle}{T} = \frac{1}{k_B T^2}\left(\frac{1}{Z}\sum_{i} E_i^2 e^{-\beta E_i} - \langle E\rangle^2\right) \\
 	& = \frac{1}{k_BT^2}\left(\langle E^2\rangle - \langle E\rangle^2\right) = \frac{\sigma^2_E}{k_B T^2},
 \end{align}
 thus being analogous to the variance in energy states.
 Finally, the magnetic susceptibility measuring how the systems magnetisation
-responds to a temperature change, is defined as 
+responds to a temperature change, is defined as
 \begin{align}
 	\chi &= \beta\left(\sum_{i}\frac{M_i^2}{Z}e^{-\beta E_i} - \langle |M_i|\rangle^2 \right)\\
 	& = \frac{1}{k_BT}\left(\langle M^2\rangle - \langle |M|\rangle^2\right) = \frac{\sigma^2_{|M|}}{k_BT}.
-\end{align} 
+\end{align}
 These thermodynamical quantities will later be usefull when estimating the
 critical temperature of the phase transition when the system looses its net
 magnetisation.
@@ -117,7 +117,7 @@ well as the heat capacity and the susceptibility as shown in \ref{subsec:ising_m
 comperison of the numerical results to known analytically quantities. When
 counting the energy and magnetisation of the $2\times2$ lattice as discribed in
 the previous subsection we get the possible states of the system shown in Table
-\ref{tab:possible_energy}. This lattice has in all $2^{N^2} = 2^4 = 16$ possible microstates. 
+\ref{tab:possible_energy}. This lattice has in all $2^{N^2} = 2^4 = 16$ possible microstates.
 
 \begin{deluxetable}{cccc}
 	%\tablewidth{0pt}
@@ -131,28 +131,28 @@ the previous subsection we get the possible states of the system shown in Table
 	$2$ & $4$  & $0 $& $0$\\
 	$2$ & $2$  & $8 $& $0$\\
 	$1$ & $4$ & $0 $& $-2$\\
-	$1$ & $1$ & $-8$ &$-4$ 
+	$1$ & $1$ & $-8$ &$-4$
 	\enddata
 \end{deluxetable}
 Using the possible energy states in Table \ref{tab:possible_energy} we can write
-the partition function of the system as 
+the partition function of the system as
 \begin{align}
 	Z = \sum_{i = 1}^{2^{N^2}} e^{\beta E_i} = 4\cosh(8J\beta) + 12.
 \end{align}
-Using this we get the expectation value for the energy to be  
+Using this we get the expectation value for the energy to be
 \begin{align}\label{eq:analyticalE}
 	\langle E\rangle  = \frac{1}{Z}\sum_{i = 1}^{2^{N^2}} E_i e^{-E_i\beta} = -\frac{8J\sinh(8J\beta)}{\cosh(8J\beta) + 3}.
 \end{align}
 Similarly we find that the expectation value of the absolute magnetisation is
-given by 
+given by
 \begin{align}\label{eq:analyticalM}
 	\langle |M| \rangle = \frac{1}{Z}\sum_{i = 1}^{2^{N^2}} |M_i|e^{-E_i\beta} = \frac{2e^{8J\beta} + 4}{\cosh(8J\beta) + 3}.
 \end{align}
-Next this leads to the heat capacity being 
+Next this leads to the heat capacity being
 \begin{align}
 	C_V = \dv{\langle E \rangle}{T} = -\frac{1}{k_BT^2}\dv{\langle E\rangle}{\beta} = \frac{192(\cosh(8J\beta) + 1)}{k_B T^2(\cosh(8J\beta) + 3)^2},
 \end{align}
-and the susceptibility (when using the absolute magnetisation) is 
+and the susceptibility (when using the absolute magnetisation) is
 \begin{align}
 	\chi_{|M|} &= \frac{1}{k_BT}\left(\langle M^2 \rangle - \langle |M|\rangle^2 \right) \\
 	&= \frac{1}{k_BT}\left(\frac{8e^{8J\beta} + 8}{\cosh(8J\beta) + 3} -\frac{(2e^{8J\beta} + 4)}{(\cosh(8J\beta) + 3)^2} \right).
@@ -168,7 +168,7 @@ Markov Chain Monte Carlo (MCMC) algorithm. We will, however, only outline the al
 used here, which is derived in detail in Ch. 3. and 4. of \cite{newman:2019}.
 The main idea behind a Markov Chain is that we want to let the system, in our
 case being the lattice of spins, transition from one state $w_i$ to the next state $w_j$
-in time. This can be written as 
+in time. This can be written as
 \begin{align}
 	w_j = W(i\to j)w_i,
 \end{align}
@@ -183,7 +183,7 @@ iteration to the next becomes negligable. This means that effectively
 	w(t_i) - w(t_i + \epsilon) = 0,
 \end{align}
 for a small change $\epsilon$, near the equilibrium position. This can be
-rewritten as 
+rewritten as
 \begin{align}
 	\sum_i W(i \to j)w_i - W(j \to i)w_j = 0,
 	\label{eq:sum_of_states}
@@ -198,7 +198,7 @@ fulfills the equation, making
 Now, because we do not know the transition probabilities $W$ because they are
 unknown or too complicated to model, we can use the above relation to model the transition
 probability using the Metropolis algorithm \citep[Ch. 3. and 4.]{newman:2019}. From the detailed
-balance we get that 
+balance we get that
 \begin{align}
 	\frac{w_j}{w_i} = \frac{W(j \to i)}{W(i \to j)} \equiv r.
 	\label{eq:trans_prob}
@@ -213,14 +213,14 @@ system may transition forwards or backwards. This must be included in the accept
 to not include a bias freezing the system at the state of highest probability,
 as we want the system to transition to as many, if not all possible states.
 
-In our case we can rewrite (\ref{eq:trans_prob}) as 
+In our case we can rewrite (\ref{eq:trans_prob}) as
 
 \begin{align}
-	r \leq \frac{P(E_2)}{P(E_1)} = \frac{\frac{1}{Z}e^{-\beta E_2}}{\frac{1}{Z}e^{-\beta E_1}} = e^{-\beta\Delta E}, 
+	r \leq \frac{P(E_2)}{P(E_1)} = \frac{\frac{1}{Z}e^{-\beta E_2}}{\frac{1}{Z}e^{-\beta E_1}} = e^{-\beta\Delta E},
 \end{align}
 where $r\in[0, 1]$ is a number drawn from a uniform distribution, effectively
 modeling all transition posibilities and at the same time eliminate the unknown
-partition function $Z$. 
+partition function $Z$.
 
 When implementing the Markov Chain in practice we first must initialize the
 system by computing the $N\times N$ lattice energy and magnetisation.
@@ -244,7 +244,7 @@ expression;
 	&= -J\sum_{\langle kl\rangle}s_k^2(s_l^2-s_l^1) = 2s_l\sum_{\langle k\rangle} s_k,
 \end{align}
 since the surrounding spins $s_k = s_k^1 = s_k^2$ are unchanged and the fliped
-spin $s_l^2 = -s_l^1$. The magnetisation change is 
+spin $s_l^2 = -s_l^1$. The magnetisation change is
 \begin{align}
 	\Delta M = 2s_l^2,
 \end{align}
@@ -257,7 +257,7 @@ flip is accepted or not through the described Metropolis algorithm.
 
 For each accepted spin flip the energy and magnetisation sample means and variances are
 updated. After many cycles the system will than converge to the most like state
-$\langle E\rangle$, and oscillate around it. 
+$\langle E\rangle$, and oscillate around it.
 
 
 \subsection{The Analysis}\label{subsec:analysis}
@@ -272,14 +272,14 @@ time, and computing the sample mean of energy and absolute magnetisation as
 \begin{align}
 	\langle E\rangle &= \frac{1}{m}\sum_{i = 1}^m E_i\\
 	\langle |M|\rangle &= \frac{1}{m}\sum_{i = 1}^m |M_i|,
-\end{align} 
+\end{align}
 at each Monte Carlo cycle $m$. This cumulative mean we can use to find how much
 time, i.e. how many Monte Carlo cycles, the system needs to reach a state close
 to the most likely state where $\langle E \rangle$ and $\langle |M|\rangle$
 start flattening out. This is deterained by a by-eye estimate. This is used as a
 starting time for the later sampling of energies and magnetisation for
 the thermodynamical quantites $C_V$ and $\chi$ when looking at the phase
-transitions. 
+transitions.
 Also we plot the number of accepted flips as a function of the Monte Carlo
 cycles to see how much the system changes states at any given time.
 
@@ -293,10 +293,10 @@ energies become larger. The lattice effectively freezes at the lowest possible
 energy state. Therewhile for higher temperatures like $k_BT/J$ the PDF
 will look more like a Gaussian distribution as the system has meany more
 possible (symmetric) energy states around the equilibrium that it can oscillate
-around. 
+around.
 
 The distributions are than compared to the sample variance given by the central
-limit theorem \citep[p. 357]{jensen:2015} defined as 
+limit theorem \citep[p. 357]{jensen:2015} defined as
 \begin{align}
 	\sigma^2 = \frac{\sigma^2_E}{m},
 \end{align}
@@ -311,7 +311,7 @@ magnetisation. In the theory presented in Ch. 5. and 6. \cite{plischke:2006} we 
 physical properties of the system near the
 critical temperature can be described by a power law. Near the critical temperature
 $T_C$ for when the lattice undergoes the phase transition, the mean magnetisation is
-given by 
+given by
 \begin{align}
 	\langle M(T) \rangle \sim (T-T_C)^\beta,
 \end{align}
@@ -325,7 +325,7 @@ where $\alpha = 0$ and $\gamma = 7.4$. When the lattice is heated to $T \gg T_C$
 the correlation length $\xi$ of the lattice becomes of the order of the lattice size.
 The correlation length is a measure of how far two correlated spins are
 separated. As the temperatue $T$ appreaches the critical temperature $T_C$, the
-correlation length increases as more and more of the lattice spins are correlated, exerting a divergent behaviour close to $T_C$ as 
+correlation length increases as more and more of the lattice spins are correlated, exerting a divergent behaviour close to $T_C$ as
 \begin{align}
 	\xi(T) = |T_C - T|^{-\nu},
 \end{align}
@@ -333,21 +333,21 @@ where we let $\nu = 1$. Since we study a second order phase transition the
 correlation length will eventually span the whole system, in our case being
 limited to a finite grid this corresponds to the
 lattice size $N$. Therefore since
-$\xi\propto N$ we get that 
+$\xi\propto N$ we get that
 \begin{align}
 	T_C(N) - T_C(N\to\infty) = aN^{-1/\nu},
 	\label{eq:temp_crit}
 \end{align}
 where $a$ and $\nu$ are constants. Then the mean magnetisation becomes 
-\begin{align}
+\begin{align}\label{eq:thermoquantM}
 	\langle M(T)\rangle \sim (T - T_C)^\beta \to N^{-\beta/\nu},
 \end{align}
 the heat capacity becomes 
-\begin{align}
+\begin{align}\label{eq:thermoquantCV}
 	C_V(T) \sim |T_C - T|^{-\alpha}\to N^{\alpha / \nu}
 \end{align}
 and the susceptibility is 
-\begin{align}
+\begin{align}\label{eq:thermoquantchi}
 	\chi(T)\sim |T_C - T|^{-\gamma} \to N^{\gamma/\nu},
 \end{align}
 where we have set $T_C(N) = T$ and $T_C(N\to\infty) = T_C$.
@@ -358,7 +358,7 @@ and $100$, and a temperature range of $T\in[2.0, 2.5]$ with 50 temperature steps
 and absolute magnetisation suddenly bend at $T = T_C(N)$, and that the heat
 capacity and susceptibility peak at $T = T_C(N)$. When $N\to\infty$ this peak
 will diverge. Using (\ref{eq:temp_crit}) for two grid sizes $N_1$ and $N_2$ we
-can estimate the constant $a$ to be 
+can estimate the constant $a$ to be
 \begin{align}
 	a = \frac{T_C(N_1) - T_C(N_2)}{N_1^{-1/\nu} - N_2^{-1/\nu}},
 \end{align}
@@ -406,7 +406,7 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	$1.56$ & $-7.7279$  & $3.9096$  & $0.8654$  & $0.1683$  \\
 	$1.84$ & $-7.4251$  & $3.8092$  & $1.2673$  & $0.2907$  \\
 	$2.12$ & $-7.0192$  & $3.6734$  & $1.5442$ & $0.4131$ \\
-	Rel. Error at $\frac{k_BT}{J} = 1.0$ & $4.967 \cdot 10^{-6}$  & $2.780\cdot 10^{-5}$  & $0.003$ & $0.0391$ 
+	Rel. Error at $\frac{k_BT}{J} = 1.0$ & $4.967 \cdot 10^{-6}$  & $2.780\cdot 10^{-5}$  & $0.003$ & $0.0391$
 	\enddata
 \end{deluxetable*}
 
@@ -487,7 +487,7 @@ tabulated in Table \ref{tab:timing}.
 	1 & -O3 & 195.636 \\
 	4 & -O3 & 55.539	\\
 	8 & -O3 & 45.61	\\
-	8 & -O1 & 220.689   
+	8 & -O1 & 220.689
 	\enddata
 \end{deluxetable}
 
@@ -536,16 +536,69 @@ flips per Monte Carlo cycle. By studying the histogram, as shown in Figure
 \ref{fig:histogram}, one can see that for $k_BT/J=2.4$ the variance in the
 energy is a lot higher than for $k_BT/J=1$. This is also tabulated in Table
 \ref{tab:variances}. Here we can see that for a higher temperature the particles
-in the crystal will be more suscebtible to thermal energy causing the devations
-around the most likely state to be larger than for a lower temperature.
+in the crystal will be more suscebtible to change due to the thermal energy causing the devations
+around the most likely state to be larger than for a lower temperature. Since
+the histogram for $k_BT/J=2.4$ is relatively gaussian one can also compare the
+standard deviation, given as $\sqrt{\sigma_E^2}$, with the FWHM. Four our result
+this seems like a good match by an eye estimate. For the lower temperature, the
+shape appears too narrow with a small number of bins making it hard to conduct
+the same estimation. The variance of the sample mean $\sigma^2$ of the energy
+provides an error estimate for the mean of the energy distribution. To improve
+our method further, one could include a similar error estimate for the other
+results as well.\\\indent
 
 The implementation of the model was also timed using parallelization and
-different compiler flags. This is tabulated in Table \ref{tab:timing}. Here we
-can see that there is a s
+different compiler flags with $N=10$. This is tabulated in Table \ref{tab:timing}. Here we
+can see that there is a significant increase in efficiency between one and four
+threads using the compiler flag -O3. However, the difference between eight and four
+threads compiled with the -O3 flag is not that significant. An interesting
+result is the difference between using eight threads using the -O1 compiler flag
+compared to using one thread with the -O3 compiler flag. We found that one
+thread with the -O3 compiler flag turned out to be the fastest. This result
+indicates that compiler flags have a larger impact on CPU time than
+parallelization. Our results however were only produced computing once for every
+combination of parallelization and compiler flag. To improve this result and
+draw a safer conclusion one should test a wider range of parallelization and
+compiler flag combinations and run the calculations more than once to provide a
+better statistical analysis.\\\indent
+
+When computing the thermodynamical quanitites $\langle E(T) \rangle$,  $C_v(T)$,
+$\chi(T)$ and $\langle \vert M(T) \vert \rangle$, as shown in Figure
+\ref{fig:thermo_quants}, our results proved to be in good compliance with theory
+as described in section \ref{subsec:analysis}. By looking at the figure one can
+see that the heat capacity $C_v(T)$ peaks close to the critical temperature
+$T_C$ with a higher peak as the lattice size increases. This is in compliance
+with what one would expect from (\ref{eq:thermoquantCV}). The same is the case
+for the behavior of the magnetic susceptibility given by
+(\ref{eq:thermoquantchi}). The plot for the energy shows that it is not very sensible
+to lattice dimensions $N$. It shows a slight bend when the temperature
+approaches the $T_C$. The absolute magnetization is, in contrast to the energy,
+a lot more sensitive to the lattice dimensions when the temperature approaches
+$T_C$. It features a steeper slope than the energy and seems to converge towards
+a constant value. 
+
 
 
 
 \section{Conclusion} \label{sec:conclusion}
+We have implemented the Ising model to simulate magnetic phase
+transitions in a lattice with periodic boundary conditions. Our
+simulations behave as expected, reaching their equilibriums after
+$\sim 10^3$ Monte Carlo cycles and our estimated critical
+temperature of the studied phase transition  $T_\text{c}$ aligns
+well with the results of \cite{onsager:1944}.
+
+For future research we should consider more than two temperatures
+to get better statistics, also running over a better grid
+resolution onmore powerful hardware. The analysis in this projects last error
+estimation of (?), which is important for robust results and should be looked
+into further. Purely in the interest of computational performance, the
+simulations should also be run and timed on different amounts of threads
+to get a better indication of how well the algorithm scales.
+
+\acknowledgements{We want to thank our fellow students Mats Ola Sand, Jon Dahl
+and Johan Andreas Fløisand for cooperation about the theory employed in this
+project.}
 
 \newpage
 \bibliography{ref}

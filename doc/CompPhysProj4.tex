@@ -257,7 +257,7 @@ updated. After many cycles the system will than converge to the most like state
 $\langle E\rangle$, and oscillate around it. 
 
 
-\subsection{The Analysis}
+\subsection{The Analysis}\label{subsec:analysis}
 Now that we have an algorithm computing the discribed thermodynamic quantites,
 we can compare the output to the known analytical values for a $2\times 2$ grid
 for say a temperature $k_BT/J = 1.0$.
@@ -390,8 +390,25 @@ became sufficiently small after approximately $10^4$ Monte Carlo cycles.\\
 	$10^6$ & $-7.9833$ & $3.9944$ & $0.0005$ & $0.0002$
 	\enddata
 \end{deluxetable}
-To verify this the model was then used to calculate the energy $E$ and absolute
-magnetisation $\vert M \vert$ both as functions of the
+
+\begin{deluxetable}{lcccc}
+	%\tablewidth{0pt}
+	\tablecaption{ Table showing the mean energy and mean absolute magnetization as well as the heat capacity and susceptibility for different temperatures. The values where computed with a number of Monte Carlo cycles of $10^6$. \label{tab:2by2_lattice}}
+	%\tablecomments{}
+	\tablecolumns{5}
+	\tablehead{$k_BT / J$  &  $\langle E\rangle$ $[J]$ & $\langle M \rangle$  & $C_V[k_B]$  & $\chi_{|M|}[J^{-1}]$}
+	\startdata
+	$1$   & $-7.9841$    & $ 3.9947$    & $0.1263$  & $0.0158$  \\
+	$1.28$ & $-7.9086$    & $3.9697$    & $0.4415$  & $0.0698$  \\
+	$1.56$ & $-7.7279$  & $3.9096$  & $0.8654$  & $0.1683$  \\
+	$1.84$ & $-7.4251$  & $3.8092$  & $1.2673$  & $0.2907$  \\
+	$2.12$ & $-7.0192$  & $3.6734$  & $1.5442$ & $0.4131$ \\
+	Rel. Error at $k_BT / J = 1.0$ & $4.967 \cdot 10^{-6}$  & $2.780\cdot 10^{-5}$  & $0.003$ & $0.0391$ 
+	\enddata
+\end{deluxetable}
+
+To verify this the model was then used to calculate the energy $E$, absolute
+magnetisation $\vert M \vert$ and heat capacity $C_v$ all as functions of the
 temperatue $T$ for lattice with size $N=20$. The values were divided by the
 lattice area $N^2$ in order to illustrate these quantities per particle. The
 number of accepted flips was also counted for these calculations. These results
@@ -472,7 +489,12 @@ tabulated in table \ref{tab:timing}.
 	1.4 & $0.0203$ & $2.03\cdot 10^{-9}$	
 	\enddata
 \end{deluxetable}
-
+Finally we used the peaks of the heat capacity $C_v$ of the $N = 80$ and $N =
+100$ lattices seen in Figure \ref{fig:thermo_quants}, to estimate the critical
+temperature $T_C(N\to\infty)$ of an infinite grid according to the method
+described in section \ref{subsec:analysis}. We found that the critical
+temperature $k_BT_C / J \approx 2.284$ with a relative error to the
+analytical value (by \cite{onsager:1944}) of $\epsilon \approx 0.675\%$.
 
 \section{Discussion} \label{sec:discussion}
 When studying the mean energy and absolute mangetization for the ordered and
